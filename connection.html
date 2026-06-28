@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New JBVNL Connection - Bijli Ghar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { primary: '#1e3a8a', secondary: '#f59e0b' },
+                    animation: { 'fade-in-up': 'fadeInUp 0.6s ease-out forwards' },
+                    keyframes: { fadeInUp: { '0%': { opacity: 0, transform: 'translateY(20px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } } }
+                } 
+            } 
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <div class="absolute inset-0 bg-blue-900/90 z-0 pointer-events-none"></div>
+    
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-[-10%] right-[-5%] w-[30rem] h-[30rem] bg-indigo-500/20 rounded-full blur-3xl"></div>
+    </div>
+
+    <nav class="bg-primary/95 backdrop-blur-md text-white shadow-xl sticky top-0 z-50 border-b border-blue-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+            <a href="index.html" class="flex items-center hover:text-yellow-400 transition transform hover:scale-105">
+                <i class="fas fa-bolt text-secondary text-2xl mr-2 drop-shadow-md"></i>
+                <span class="font-bold text-xl tracking-wider">BIJLI GHAR</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a id="nav-home" href="index.html" class="hover:text-secondary font-semibold transition">Home</a>
+                <a id="nav-about" href="about.html" class="hover:text-secondary font-semibold transition">About</a>
+                <a id="nav-meters" href="meters.html" class="hover:text-secondary font-semibold transition">Meters</a>
+                <a id="nav-services" href="services.html" class="hover:text-secondary font-semibold transition">Services</a>
+                <a id="nav-connection" href="connection.html" class="text-secondary font-bold border-b-2 border-secondary pb-1">New Connection</a>
+            
+            </div>
+
+            <div class="hidden md:flex items-center space-x-3">
+                <!-- Language selector inside navbar -->
+                <select id="site-lang" class="bg-blue-800/60 backdrop-blur border border-blue-300/30 text-white text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-secondary shadow cursor-pointer">
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                </select>
+                <a href="cart.html" class="relative text-white hover:text-secondary flex items-center mx-4 transition transform hover:scale-110">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span class="cart-count-badge absolute -top-2 -right-3 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow hidden">0</span>
+                </a>
+                <div id="auth-btn-container" class="flex items-center space-x-3 ml-2"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow py-16 relative z-10">
+        <div class="max-w-5xl mx-auto px-4">
+            
+            <form id="connectionForm" class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] p-8 md:p-12 border border-white/20 animate-fade-in-up">
+                
+                <div class="text-center mb-10">
+                    <h1 class="text-4xl font-extrabold text-primary tracking-tight">New Connection Setup</h1>
+                    <p class="text-gray-500 mt-2 font-medium">Complete your JBVNL application quickly and securely.</p>
+                </div>
+                
+                <h3 class="font-bold text-xl text-primary mb-6 border-b-2 border-blue-100 pb-2 flex items-center">
+                    <i class="fas fa-home text-secondary mr-3"></i> 1. Installation Details
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm mb-10">
+                    <div class="relative group">
+                        <i class="fas fa-user absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
+                        <input type="text" id="connName" placeholder="Applicant Name" class="w-full bg-gray-50 border border-gray-200 text-gray-800 focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm hover:shadow-md" required>
+                    </div>
+                    
+                    <div class="relative group">
+                        <i class="fas fa-phone-alt absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
+                        <input type="tel" id="connPhone" placeholder="Phone Number (10 Digits)" class="w-full bg-gray-50 border border-gray-200 text-gray-800 focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm hover:shadow-md" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                    </div>
+                    
+                    <div class="relative group">
+                        <i class="fas fa-map-marker-alt absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
+                        <input type="text" id="connAddress" placeholder="Full Address" class="w-full bg-gray-50 border border-gray-200 text-gray-800 focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm hover:shadow-md" required>
+                    </div>
+                    
+                    <div class="relative group">
+                        <i class="fas fa-location-arrow absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
+                        <input type="text" id="connLandmark" placeholder="Landmark (Optional)" class="w-full bg-gray-50 border border-gray-200 text-gray-800 focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm hover:shadow-md">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 bg-blue-50/50 p-6 rounded-2xl border border-blue-100">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Connection Type</label>
+                        <select id="connType" class="w-full bg-white border border-gray-200 text-gray-800 focus:ring-2 focus:ring-primary transition-all duration-300 rounded-xl py-3 px-4 shadow-sm cursor-pointer" onchange="calculatePrice()">
+                            <option value="domestic">Domestic</option>
+                            <option value="commercial">Commercial</option>
+                            <option value="irrigation">Irrigation</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Number of Floors</label>
+                        <div class="relative group">
+                            <i class="fas fa-building absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
+                            <input type="number" id="floors" min="1" max="10" value="1" class="w-full bg-white border border-gray-200 text-gray-800 focus:ring-2 focus:ring-primary transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm" oninput="autoCalculateLoad()">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Total AC Capacity (Tons)</label>
+                        <div class="relative group">
+                            <i class="fas fa-snowflake absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
+                            <input type="number" id="acTons" min="0" max="15" value="0" class="w-full bg-white border border-gray-200 text-gray-800 focus:ring-2 focus:ring-primary transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm" oninput="autoCalculateLoad()">
+                        </div>
+                        <p class="text-xs text-blue-600 mt-2 font-semibold"><i class="fas fa-info-circle mr-1"></i>Official JBVNL Load Rule applied.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Calculated Load (kWh)</label>
+                        <div class="relative group">
+                            <i class="fas fa-bolt absolute left-4 top-3.5 text-secondary group-focus-within:text-yellow-600 transition"></i>
+                            <input type="number" id="loadReq" min="1" max="20" value="1" class="w-full bg-yellow-50 border border-yellow-200 text-primary font-bold focus:ring-2 focus:ring-secondary transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-inner" oninput="calculatePrice()">
+                        </div>
+                        <p id="loadHelperText" class="text-xs text-gray-500 mt-2">1-5 kWh uses a standard Single Phase connection.</p>
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Phase Required</label>
+                        <select id="phaseType" class="w-full bg-gray-100 border border-gray-200 text-gray-500 rounded-xl py-3 px-4 shadow-inner cursor-not-allowed" disabled>
+                            <option value="single">Single Phase (1-5 kWh)</option>
+                            <option value="three">3-Phase (6+ kWh)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-xl text-primary mb-6 border-b-2 border-blue-100 pb-2 flex items-center">
+                    <i class="fas fa-file-upload text-secondary mr-3"></i> 2. Mandatory Documents
+                </h3>
+                <div class="bg-gray-50 p-6 rounded-2xl mb-10 border border-gray-200 shadow-inner">
+                    <p class="text-sm text-gray-500 mb-6 font-medium">Select multiple files at once if your document has multiple pages. Supported formats: JPG, PNG, PDF.</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 text-sm">
+                        <div class="flex flex-col">
+                            <label class="block mb-2 font-bold text-gray-800">Passport Photo <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <input type="file" accept="image/*,application/pdf" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="handleFileSelect(event, 'photo')">
+                                <div class="bg-white border-2 border-dashed border-blue-300 text-blue-500 hover:bg-blue-50 transition rounded-xl p-4 flex justify-center items-center font-bold shadow-sm">
+                                    <i class="fas fa-cloud-upload-alt mr-2 text-lg"></i> Click to Upload Photo
+                                </div>
+                            </div>
+                            <div id="previewContainer_photo" class="space-y-2 mt-3 w-full flex-grow"></div>
+                        </div>
+                        
+                        <div class="flex flex-col">
+                            <label class="block mb-2 font-bold text-gray-800">Valid ID Proof <span class="text-red-500">*</span> <span class="text-gray-400 font-normal text-xs">(Front & Back)</span></label>
+                            <div class="relative">
+                                <input type="file" accept="image/*,application/pdf" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="handleFileSelect(event, 'idProof')">
+                                <div class="bg-white border-2 border-dashed border-blue-300 text-blue-500 hover:bg-blue-50 transition rounded-xl p-4 flex justify-center items-center font-bold shadow-sm">
+                                    <i class="fas fa-cloud-upload-alt mr-2 text-lg"></i> Click to Upload ID
+                                </div>
+                            </div>
+                            <div id="previewContainer_idProof" class="space-y-2 mt-3 w-full flex-grow"></div>
+                        </div>
+                        
+                        <div class="flex flex-col">
+                            <label class="block mb-2 font-bold text-gray-800">Signature <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <input type="file" accept="image/*,application/pdf" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="handleFileSelect(event, 'signature')">
+                                <div class="bg-white border-2 border-dashed border-blue-300 text-blue-500 hover:bg-blue-50 transition rounded-xl p-4 flex justify-center items-center font-bold shadow-sm">
+                                    <i class="fas fa-cloud-upload-alt mr-2 text-lg"></i> Click to Upload Signature
+                                </div>
+                            </div>
+                            <div id="previewContainer_signature" class="space-y-2 mt-3 w-full flex-grow"></div>
+                        </div>
+                        
+                        <div class="flex flex-col">
+                            <label class="block mb-2 font-bold text-gray-800">Land Proof <span class="text-red-500">*</span> <span class="text-gray-400 font-normal text-xs">(Tax/Deed)</span></label>
+                            <div class="relative">
+                                <input type="file" accept="image/*,application/pdf" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="handleFileSelect(event, 'landProof')">
+                                <div class="bg-white border-2 border-dashed border-blue-300 text-blue-500 hover:bg-blue-50 transition rounded-xl p-4 flex justify-center items-center font-bold shadow-sm">
+                                    <i class="fas fa-cloud-upload-alt mr-2 text-lg"></i> Click to Upload Land Proof
+                                </div>
+                            </div>
+                            <div id="previewContainer_landProof" class="space-y-2 mt-3 w-full flex-grow"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50/50 border border-blue-200 rounded-2xl p-6 mb-10 shadow-sm">
+                    <h4 class="font-bold text-primary text-base mb-4 flex items-center">
+                        <i class="fas fa-file-contract text-secondary mr-2"></i> User Agreement
+                    </h4>
+                    
+                    <div class="flex items-start bg-white p-4 rounded-xl border border-gray-200 shadow-sm transition hover:border-primary">
+                        <input type="checkbox" id="termsAgree" class="mt-1 w-6 h-6 text-primary rounded border-gray-300 focus:ring-primary flex-shrink-0 cursor-pointer shadow-sm" required>
+                        
+                        <div class="ml-4 flex-grow">
+                            <label for="termsAgree" class="block text-sm text-gray-900 font-extrabold mb-2 cursor-pointer hover:text-primary transition">
+                                I have read and agree to the Terms & Conditions. <span class="text-red-500">*</span>
+                            </label>
+                            <div class="max-h-10 overflow-y-auto pr-3 text-xs text-gray-600 leading-relaxed custom-scrollbar">
+                                <ul class="list-disc pl-4 space-y-3">
+                                    <li><strong>Payment does not confirm connection:</strong> The connection will only be provided if all uploaded documents are correct and successfully verified by authorities.</li>
+                                    <li><strong>Fee Breakdown:</strong> The total amount covers the cost of the new meter, the official security deposit, and processing/service charges.</li>
+                                    <li><strong>Refund Policy:</strong> If the connection cannot be completed due to invalid documents or physical issues at the plot/flat, your payment will be refunded. <em>Note: Any money used up to that point during processing, plus a ₹500 service charge, will be deducted from your final refund amount.</em></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-between bg-primary text-white p-8 rounded-2xl shadow-[0_10px_30px_rgba(30,58,138,0.4)] border border-blue-700 relative overflow-hidden">
+                    <i class="fas fa-bolt absolute -right-4 -bottom-10 text-9xl text-white opacity-5"></i>
+                    
+                    <div class="relative z-10 text-center sm:text-left mb-6 sm:mb-0">
+                        <p class="text-sm text-blue-200 font-bold uppercase tracking-wider mb-1">Total Estimated Cost</p>
+                        <p class="text-5xl font-black text-secondary drop-shadow-md" id="totalPrice">₹8,500</p>
+                    </div>
+                    
+                    <button type="submit" class="relative z-10 w-full sm:w-auto bg-secondary text-primary font-black px-12 py-5 rounded-xl hover:bg-yellow-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-lg flex items-center justify-center">
+                        <i class="fas fa-lock mr-2"></i> Proceed to Pay
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <div id="documentPreviewModal" class="hidden fixed inset-0 bg-primary/90 z-[100] flex items-center justify-center p-4 backdrop-blur-md transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl flex flex-col max-h-[90vh] overflow-hidden">
+            <div class="flex justify-between items-center p-5 border-b bg-gray-50">
+                <h3 class="font-bold text-primary text-xl flex items-center"><i class="fas fa-file-alt mr-3 text-secondary text-2xl"></i> <span id="previewModalTitle">Document Preview</span></h3>
+                <button type="button" onclick="closeFullPreview()" class="text-gray-400 hover:text-red-500 bg-white border border-gray-200 rounded-full w-10 h-10 flex items-center justify-center focus:outline-none transition shadow-sm hover:shadow-md hover:scale-110">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 flex-grow overflow-auto bg-gray-200 flex justify-center items-center" id="previewModalContent">
+                </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-900 text-gray-300 pt-16 pb-8 mt-auto relative z-10 border-t-4 border-secondary mb-[-2rem]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
+            <div>
+                <h3 class="text-2xl font-bold text-white mb-4 flex items-center"><i class="fas fa-bolt text-secondary mr-2"></i>BIJLI GHAR</h3>
+                <p class="text-sm text-gray-400 leading-relaxed pr-4">Your trusted partner for certified electrical equipment, secure installations, and fast JBVNL connections in Hazaribag.</p>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold text-white mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="about.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> About Us</a></li>
+                    <li><a href="meters.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Shop Meters</a></li>
+                    <li><a href="services.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Book Electrician</a></li>
+                    <li><a href="connection.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Apply for Connection</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold text-white mb-4">Contact Information</h4>
+                <ul class="space-y-4 text-sm">
+                    <li class="flex items-start">
+                        <i class="fas fa-map-marker-alt mt-1 mr-3 text-secondary text-lg"></i> 
+                        <span>Opposite Mission Hospital,<br>In front of JUVNL office,<br>Hazaribag, Jharkhand 825301</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope mr-3 text-secondary text-lg"></i> 
+<span>aniketkumar5893@gmail.com</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fab fa-whatsapp mr-3 text-secondary text-lg"></i>
+                        <a href="https://wa.me/918271747320" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400 transition">+91 82717 47320</a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+        <div class="border-t border-gray-800 max-w-7xl mx-auto px-4 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+            <p>&copy; 2026 Bijli Ghar. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        /* Custom scrollbar for the terms box to look clean */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+
+    <script src="main.js"></script>
+    <script>
+        // --- 1. MULTI-FILE UPLOAD & DELETE MANAGER ---
+        const fileState = {
+            photo: [],
+            idProof: [],
+            signature: [],
+            landProof: []
+        };
+
+        function handleFileSelect(event, category) {
+            const files = Array.from(event.target.files);
+            if (files.length === 0) return;
+
+            files.forEach(file => {
+                file.uniqueId = Math.random().toString(36).substring(2, 9);
+                file.previewUrl = URL.createObjectURL(file); 
+                fileState[category].push(file); 
+            });
+
+            event.target.value = '';
+            renderPreviews(category);
+        }
+
+        function renderPreviews(category) {
+            const container = document.getElementById('previewContainer_' + category);
+            container.innerHTML = '';
+            
+            fileState[category].forEach(file => {
+                let icon = 'fa-file'; let iconColor = 'text-gray-500';
+                if (file.type.startsWith('image/')) { icon = 'fa-image'; iconColor = 'text-blue-500'; }
+                else if (file.type === 'application/pdf') { icon = 'fa-file-pdf'; iconColor = 'text-red-500'; }
+
+                container.innerHTML += `
+                    <div class="flex items-center justify-between p-3 border border-blue-100 rounded-xl bg-white shadow-sm w-full transition transform hover:-translate-y-0.5 hover:shadow-md group">
+                        <div class="flex items-center overflow-hidden pr-2 flex-grow">
+                            <i class="fas ${icon} ${iconColor} text-xl mr-3 flex-shrink-0"></i>
+                            <span class="text-xs font-bold text-gray-700 truncate">${file.name}</span>
+                        </div>
+                        <div class="flex items-center space-x-2 flex-shrink-0">
+                            <button type="button" onclick="openFullPreview('${file.previewUrl}', '${file.type}', '${file.name}')" class="text-xs bg-blue-50 text-blue-600 border border-blue-200 p-2 rounded-lg hover:bg-blue-600 hover:text-white transition" title="Preview">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button type="button" onclick="deleteFile('${category}', '${file.uniqueId}')" class="text-xs bg-red-50 text-red-600 border border-red-200 p-2 rounded-lg hover:bg-red-600 hover:text-white transition" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteFile(category, uniqueId) {
+            const index = fileState[category].findIndex(f => f.uniqueId === uniqueId);
+            if (index > -1) {
+                URL.revokeObjectURL(fileState[category][index].previewUrl); 
+                fileState[category].splice(index, 1); 
+                renderPreviews(category); 
+            }
+        }
+
+        // --- PREVIEW MODAL ---
+        function openFullPreview(url, type, name) {
+            const modal = document.getElementById('documentPreviewModal');
+            const content = document.getElementById('previewModalContent');
+            document.getElementById('previewModalTitle').innerText = name;
+
+            if (type.startsWith('image/')) {
+                content.innerHTML = `<img src="${url}" class="max-w-full max-h-[75vh] object-contain rounded shadow-lg border border-gray-200" />`;
+            } else if (type === 'application/pdf') {
+                content.innerHTML = `<iframe src="${url}" class="w-full h-[75vh] rounded shadow-lg border border-gray-200" frameborder="0"></iframe>`;
+            } else {
+                content.innerHTML = `<p class="text-gray-500 font-bold text-lg"><i class="fas fa-exclamation-triangle mr-2 text-yellow-500"></i>Preview not available.</p>`;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeFullPreview() {
+            document.getElementById('documentPreviewModal').classList.add('hidden');
+            document.getElementById('previewModalContent').innerHTML = ''; 
+        }
+
+        // --- 2. JBVNL RULE LOAD CALCULATION ---
+        function autoCalculateLoad() {
+            let floors = parseInt(document.getElementById('floors').value) || 0;
+            let acTons = parseInt(document.getElementById('acTons').value) || 0;
+            
+            let calculatedLoad = floors + acTons;
+            
+            if (calculatedLoad < 1) calculatedLoad = 1;
+            if (calculatedLoad > 20) calculatedLoad = 20;
+            
+            document.getElementById('loadReq').value = calculatedLoad;
+            
+            calculatePrice();
+        }
+
+        // --- 3. PRICING LOGIC ---
+        function calculatePrice() {
+            const type = document.getElementById('connType').value;
+            let load = parseInt(document.getElementById('loadReq').value) || 1;
+            if (load < 1) load = 1; 
+            if (load > 20) { load = 20; document.getElementById('loadReq').value = 20; }
+            
+            const phaseSelect = document.getElementById('phaseType');
+            const helperText = document.getElementById('loadHelperText');
+            let actualPhase = 'single';
+            
+            if (load > 5) { 
+                phaseSelect.value = 'three'; 
+                actualPhase = 'three'; 
+                helperText.innerHTML = "<span class='text-secondary font-bold'>6+ kWh automatically requires a 3-Phase connection.</span>";
+            } else { 
+                phaseSelect.value = 'single'; 
+                actualPhase = 'single';
+                helperText.innerText = "1-5 kWh uses a standard Single Phase connection.";
+            }
+
+            let ratePerKwh = 0;
+            if (type === 'domestic') ratePerKwh = (load <= 5) ? 8500 : 9000;
+            else if (type === 'commercial') ratePerKwh = (load <= 5) ? 13500 : 16500;
+            else if (type === 'irrigation') ratePerKwh = (load <= 5) ? 7000 : 10000; 
+
+            let basePrice = load * ratePerKwh;
+            let discountPerKwh = (actualPhase === 'single') ? 1000 : 3000;
+
+            let discountableUnits = 0;
+            for (let i = 1; i <= load; i++) { if (i !== 1 && i !== 6) discountableUnits++; }
+
+            let total = basePrice - (discountableUnits * discountPerKwh);
+            document.getElementById('totalPrice').innerText = `₹${total.toLocaleString('en-IN')}`;
+        }
+        
+        // --- 4. PAYMENT & UPLOAD LOGIC ---
+        document.getElementById('connectionForm').addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            const user = JSON.parse(localStorage.getItem('bijliUser'));
+            if (!user) { alert("Please login first!"); window.location.assign('login.html'); return; }
+
+            if (fileState.photo.length === 0 || fileState.idProof.length === 0 || fileState.signature.length === 0 || fileState.landProof.length === 0) {
+                alert("Please upload at least one document for all 4 required fields.");
+                return;
+            }
+
+            const cleanTotal = parseInt(document.getElementById('totalPrice').innerText.replace(/[^0-9]/g, ''));
+            var options = {
+                "key": "rzp_test_T69VfOhy38d2hR", "amount": cleanTotal * 100, "currency": "INR", "name": "Bijli Ghar",
+                "handler": async function (response) {
+                    const paymentId = response.razorpay_payment_id;
+                    
+                    const floors = document.getElementById('floors').value;
+                    const acTons = document.getElementById('acTons').value;
+                    const loadStr = document.getElementById('loadReq').value + " kWh, " + document.getElementById('phaseType').value + " Phase (" + document.getElementById('connType').value + ") [Floors: " + floors + ", AC: " + acTons + " Ton]";
+
+                    const formData = new FormData();
+                    formData.append('name', document.getElementById('connName').value);
+                    formData.append('phone', document.getElementById('connPhone').value);
+                    formData.append('email', user.email || '');
+                    formData.append('address', document.getElementById('connAddress').value + ", " + document.getElementById('connLandmark').value);
+                    formData.append('amount', cleanTotal); 
+                    formData.append('items', loadStr);
+                    formData.append('paymentId', paymentId);
+
+                    
+                    fileState.photo.forEach((f, i) => formData.append('photo_' + i, f, f.name));
+                    fileState.idProof.forEach((f, i) => formData.append('idProof_' + i, f, f.name));
+                    fileState.signature.forEach((f, i) => formData.append('signature_' + i, f, f.name));
+                    fileState.landProof.forEach((f, i) => formData.append('landProof_' + i, f, f.name));
+
+                    const btn = document.querySelector('button[type="submit"]');
+                    btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Uploading to Database...`;
+                    btn.disabled = true;
+
+                    try {
+                        const res = await fetch('http://localhost:3000/save-connection', { method: 'POST', body: formData });
+                        const data = await res.json();
+                        if (!data.success) throw new Error(data.error);
+
+                        const userId = user.uid || user.email || 'guest';
+                        const historyKey = 'bijliHistory_' + userId;
+                        let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+                        history.push({ type: 'New Connection', date: new Date().toLocaleDateString(), amount: cleanTotal, items: loadStr, status: 'Documents Uploaded', id: paymentId });
+                        localStorage.setItem(historyKey, JSON.stringify(history));
+
+                        alert("Application and Documents securely saved to Database!"); 
+                        window.location.assign('account.html');
+                    } catch (err) { 
+                        console.error(err);
+                        alert("⚠️ Error: Could not reach the database."); 
+                        btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Pay via Razorpay`;
+                        btn.disabled = false;
+                    }
+                }
+            };
+            new Razorpay(options).open();
+        });
+        
+        // Initial setup
+        autoCalculateLoad();
+    </script>
+   
+</body>
+</html>

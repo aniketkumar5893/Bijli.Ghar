@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Account - Bijli Ghar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#1e3a8a', secondary: '#f59e0b' } } } }</script>
+</head>
+<body class="min-h-screen bg-cover bg-center bg-fixed" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');">
+    <!-- Dark overlay for readability -->
+    <div class="absolute inset-0 bg-blue-900/60 z-0 pointer-events-none"></div>
+    <!-- UNIVERSAL NAVIGATION BAR -->
+    <nav class="bg-primary text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+            
+            <!-- Logo (Clicking this also goes Home) -->
+            <a href="index.html" class="flex items-center hover:text-yellow-400 transition">
+                <i class="fas fa-bolt text-secondary text-2xl mr-2"></i>
+                <span class="font-bold text-xl tracking-wider">BIJLI GHAR</span>
+            </a>
+            
+            <!-- Menu Links -->
+            <div class="hidden md:flex items-center space-x-5">
+                <a href="index.html" class="hover:text-secondary transition font-semibold">Home</a>
+                <a href="about.html" class="hover:text-secondary transition font-semibold">About</a>
+                <a href="meters.html" class="hover:text-secondary transition font-semibold">Meters</a>
+                <a href="services.html" class="hover:text-secondary transition font-semibold">Services</a>
+                <a href="connection.html" class="hover:text-secondary transition font-semibold">New Connection</a>
+                
+                <!-- Language selector inside navbar -->
+                <select id="site-lang" class="bg-blue-800/60 backdrop-blur border border-blue-300/30 text-white text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-secondary shadow cursor-pointer">
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                </select>
+                
+                <!-- Cart Icon -->
+                <a href="cart.html" class="relative text-white hover:text-secondary flex items-center mx-2 transition">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span class="cart-count-badge absolute -top-2 -right-3 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow">0</span>
+                </a>
+                
+                <!-- Auth Buttons Container (Injected by main.js) -->
+                <div id="auth-btn-container" class="flex items-center space-x-3 ml-2"></div>
+            </div>
+            
+        </div>
+    </nav>
+    <!-- END UNIVERSAL NAVIGATION BAR -->
+
+    <main class="max-w-4xl mx-auto py-10 px-4 relative z-10">
+
+        <div class="bg-white p-8 rounded-2xl shadow-sm border mb-8">
+            <h2 id="welcome-text" class="text-2xl font-bold text-blue-900">Welcome!</h2>
+            <p class="text-gray-500 mt-1">Manage your profile, addresses, and view your bookings below.</p>
+        </div>
+
+        <!-- ACCOUNT INTERNAL NAV + TABS -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border mb-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-user-edit mr-3 text-primary"></i> My Account
+                    </h3>
+                    <p id="mail-id" class="text-gray-500 text-sm mt-1"></p>
+                </div>
+
+                <div class="flex gap-2 flex-wrap">
+                    <button type="button" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm transition bg-blue-50 text-primary border border-blue-100" data-tab="profile">Profile</button>
+                    <button type="button" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm transition bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" data-tab="serviceHistory">Service History</button>
+                    <button type="button" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm transition bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" data-tab="orderHistory">Order History</button>
+                    <button type="button" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm transition bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" data-tab="connectionHistory">New Connection History</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFILE TAB -->
+        <section id="tab-profile" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border mb-8">
+            <div class="flex items-start justify-between gap-6">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-user-edit mr-3 text-primary"></i> Your Profile & Addresses
+                    </h3>
+                    <p class="text-gray-500 text-sm mt-1">Update your details. You can also keep multiple addresses and select a default.</p>
+                </div>
+                <button id="saveProfileBtn" class="bg-secondary text-primary px-4 py-2 rounded-lg font-bold hover:bg-yellow-400 transition shadow">
+                    <i class="fas fa-save mr-2"></i>Save Changes
+                </button>
+            </div>
+
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                    <h4 class="font-bold text-gray-800 mb-3 flex items-center"><i class="fas fa-id-card mr-2 text-primary"></i> Personal Info</h4>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Name</label>
+                            <input id="profileName" type="text" class="w-full bg-white border border-gray-300 text-gray-800 rounded-xl py-3 px-4 shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent"/>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Phone</label>
+                            <input id="profilePhone" type="tel" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="w-full bg-white border border-gray-300 text-gray-800 rounded-xl py-3 px-4 shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                    <h4 class="font-bold text-gray-800 mb-3 flex items-center"><i class="fas fa-map-marked-alt mr-2 text-primary"></i> Add New Address</h4>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Label (Home/Office)</label>
+                            <input id="newAddrLabel" type="text" placeholder="e.g., Home" class="w-full bg-white border border-gray-300 text-gray-800 rounded-xl py-3 px-4 shadow-sm"/>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Address</label>
+                            <textarea id="newAddrText" rows="3" placeholder="Flat, Street, Area, City" class="w-full bg-white border border-gray-300 text-gray-800 rounded-xl py-3 px-4 shadow-sm resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Landmark (optional)</label>
+                            <input id="newAddrLandmark" type="text" placeholder="e.g., Near SBI / Beside Temple" class="w-full bg-white border border-gray-300 text-gray-800 rounded-xl py-3 px-4 shadow-sm"/>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Phone for this address (optional)</label>
+                            <input id="newAddrPhone" type="tel" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="10 digits" class="w-full bg-white border border-gray-300 text-gray-800 rounded-xl py-3 px-4 shadow-sm"/>
+                        </div>
+                        <button id="addAddressBtn" class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-800 transition shadow w-full">
+                            <i class="fas fa-plus mr-2"></i>Add Address
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <h4 class="font-bold text-gray-800 mb-3 flex items-center"><i class="fas fa-location-dot mr-2 text-primary"></i> Saved Addresses</h4>
+                <div id="addressesContainer" class="space-y-4"></div>
+
+                <div id="noAddressesState" class="hidden text-gray-500 text-sm bg-white border border-dashed rounded-xl p-6 text-center">
+                    No addresses saved yet. Add one using the form above.
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICE HISTORY TAB -->
+        <section id="tab-serviceHistory" class="hidden">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">Service History</h3>
+            <div id="service-container" class="space-y-6"></div>
+        </section>
+
+        <!-- ORDER HISTORY TAB -->
+        <section id="tab-orderHistory" class="hidden">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">Order History</h3>
+            <div id="order-container" class="space-y-6"></div>
+        </section>
+
+        <!-- NEW CONNECTION HISTORY TAB -->
+        <section id="tab-connectionHistory" class="hidden">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">New Connection History</h3>
+            <div id="connection-container" class="space-y-6"></div>
+        </section>
+    </main>
+
+    <script src="main.js"></script>
+    <script>
+        function safeParse(json, fallback) {
+            try { return JSON.parse(json) ?? fallback; } catch (e) { return fallback; }
+        }
+
+        function getUserId() {
+            const user = JSON.parse(localStorage.getItem('bijliUser'));
+            return (user && (user.uid || user.email)) ? (user.uid || user.email) : 'guest';
+        }
+
+        function getProfileKey() {
+            return 'bijliProfile_' + getUserId();
+        }
+
+        function getHistoryKey() {
+            return 'bijliHistory_' + getUserId();
+        }
+
+        function uid() {
+            return 'addr_' + Math.random().toString(16).slice(2) + '_' + Date.now();
+        }
+
+        function defaultPhoneFromProfile(profile) {
+            if (!profile) return '';
+            return profile.phone || '';
+        }
+
+        function renderAddresses(profile) {
+            const addressesContainer = document.getElementById('addressesContainer');
+            const noAddressesState = document.getElementById('noAddressesState');
+            const addresses = profile?.addresses || [];
+
+            addressesContainer.innerHTML = '';
+
+            if (!addresses.length) {
+                noAddressesState.classList.remove('hidden');
+                return;
+            }
+
+            noAddressesState.classList.add('hidden');
+
+            addresses.forEach(addr => {
+                const card = document.createElement('div');
+                card.className = 'bg-gray-50 border border-gray-200 rounded-xl p-4';
+
+                const isDefault = profile.defaultAddressId && addr.id === profile.defaultAddressId;
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-3">
+                                <input type="radio" name="defaultAddress" ${isDefault ? 'checked' : ''} value="${addr.id}" class="mt-1"/>
+                                <div>
+                                    <div class="font-bold text-gray-800 flex items-center gap-2">
+                                        <i class="fas fa-location-dot text-primary"></i>
+                                        <span class="truncate">${addr.label || 'Address'}</span>
+                                        ${isDefault ? `<span class="ml-2 px-2 py-0.5 bg-secondary/20 text-secondary font-bold text-xs rounded-full">Default</span>` : ''}
+                                    </div>
+                                    <div class="text-sm text-gray-600 mt-1 whitespace-pre-line">${addr.address || ''}</div>
+                                    ${addr.landmark ? `<div class="text-sm text-gray-600 mt-1"><i class="fas fa-map-marker-alt text-primary mr-2"></i>${addr.landmark}</div>` : ''}
+                                    <div class="text-sm font-bold text-gray-800 mt-2 flex items-center gap-2">
+
+                                        <i class="fas fa-phone-alt text-gray-500"></i>
+                                        <span>${addr.phone || defaultPhoneFromProfile(profile) || '-'}</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-2 shrink-0">
+                            <button type="button" class="editAddrBtn bg-white border border-gray-200 text-gray-800 px-3 py-2 rounded-lg font-bold hover:bg-gray-100 transition" data-id="${addr.id}">
+                                <i class="fas fa-pen mr-2 text-primary"></i>Edit
+                            </button>
+                            <button type="button" class="deleteAddrBtn bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg font-bold hover:bg-red-100 transition" data-id="${addr.id}">
+                                <i class="fas fa-trash mr-2"></i>Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                addressesContainer.appendChild(card);
+            });
+        }
+
+        function loadProfile() {
+            const key = getProfileKey();
+            return safeParse(localStorage.getItem(key), { name: '', email: '', phone: '', addresses: [], defaultAddressId: '' });
+        }
+
+
+        function saveProfile(profile) {
+            localStorage.setItem(getProfileKey(), JSON.stringify(profile));
+        }
+
+        function setFormFromAddress(addr) {
+            document.getElementById('newAddrLabel').value = addr?.label || '';
+            document.getElementById('newAddrText').value = addr?.address || '';
+            document.getElementById('newAddrLandmark').value = addr?.landmark || '';
+            document.getElementById('newAddrPhone').value = addr?.phone || '';
+            document.getElementById('addAddressBtn').dataset.editId = addr?.id || '';
+            document.getElementById('addAddressBtn').innerHTML = `<i class="fas fa-save mr-2"></i>Update Address`;
+        }
+
+        function resetAddressForm() {
+            document.getElementById('newAddrLabel').value = '';
+            document.getElementById('newAddrText').value = '';
+            document.getElementById('newAddrLandmark').value = '';
+            document.getElementById('newAddrPhone').value = '';
+            document.getElementById('addAddressBtn').dataset.editId = '';
+            document.getElementById('addAddressBtn').innerHTML = `<i class="fas fa-plus mr-2"></i>Add Address`;
+        }
+
+
+        function parseAddrFromItems(itemsStr) {
+            if (!itemsStr) return { address: '', phone: '' };
+            const idx = itemsStr.indexOf('Addr:');
+            if (idx === -1) return { address: '', phone: '' };
+            return { address: itemsStr.slice(idx + 5).trim(), phone: '' };
+        }
+
+        function renderHistoryList(history, container, emptyText) {
+            if (!history.length) {
+                container.innerHTML = `<div class="text-center p-10 bg-white border border-dashed rounded-lg text-gray-500">${emptyText}</div>`;
+                return;
+            }
+
+            const renderOne = item => {
+                const addrFromItems = parseAddrFromItems(item.items);
+                const phone = item.customerPhone || item.phone || '';
+                const address = item.customerAddress || addrFromItems.address || '';
+
+                return `
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold uppercase">${item.type}</span>
+                                <p class="text-sm text-gray-500 mt-2">Ref ID: ${item.id || '-'}</p>
+                                <p class="font-bold">Applied on ${item.date || '-'}</p>
+                            </div>
+                            <p class="text-2xl font-bold text-primary">₹${item.amount ?? 0}</p>
+                        </div>
+
+                        <div class="border-t pt-4">
+                            <p class="text-sm"><strong>Details:</strong> ${item.items || '-'}</p>
+
+                            <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div class="bg-gray-50 border border-gray-200 rounded-xl p-3">
+                                    <div class="text-xs font-bold text-gray-500 uppercase tracking-wide">Booking Phone</div>
+                                    <div class="text-sm font-bold text-gray-800 flex items-center gap-2 mt-1">
+                                        <i class="fas fa-phone-alt text-secondary"></i>
+                                        <span>${phone || '-'}</span>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 border border-gray-200 rounded-xl p-3">
+                                    <div class="text-xs font-bold text-gray-500 uppercase tracking-wide">Booking Address</div>
+                                    <div class="text-sm font-bold text-gray-800 mt-1 whitespace-pre-line">${address || '-'}</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 flex items-center">
+                                <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold"><i class="fas fa-check-circle mr-1"></i> ${item.status || 'In Progress'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            };
+
+            container.innerHTML = history.reverse().map(renderOne).join('');
+        }
+
+        function renderTabs(profile) {
+            const userId = getUserId();
+            const historyKey = 'bijliHistory_' + userId;
+            const history = safeParse(localStorage.getItem(historyKey), []);
+
+            // Split lists based on the stored `type`
+            const serviceHistory = history.filter(h => (h.type || '').includes('Service'));
+            const orderHistory = history.filter(h => (h.type || '').includes('Meter'));
+            const connectionHistory = history.filter(h => (h.type || '').includes('Connection'));
+
+            renderHistoryList(
+                serviceHistory,
+                document.getElementById('service-container'),
+                'No service bookings found.'
+            );
+
+            renderHistoryList(
+                orderHistory,
+                document.getElementById('order-container'),
+                'No meter orders found.'
+            );
+
+            renderHistoryList(
+                connectionHistory,
+                document.getElementById('connection-container'),
+                'No new connection applications found.'
+            );
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('bijliUser'));
+            if (!user) { window.location.assign('login.html'); return; }
+
+            // show mail id from profile/email stored in localStorage
+            const profile = loadProfile();
+            const mailId = (profile?.email || user?.email || '').toString();
+            const mailEl = document.getElementById('mail-id');
+            if (mailEl) mailEl.innerText = mailId ? `Mail: ${mailId}` : '';
+
+            document.getElementById('welcome-text').innerText = `Welcome, ${user.name}`;
+
+            // Ensure profile defaults
+            if (!Array.isArray(profile.addresses)) profile.addresses = [];
+            if (!profile.email && user.email) profile.email = user.email;
+
+            // Prefill profile form
+            document.getElementById('profileName').value = profile.name || user.name || '';
+            document.getElementById('profilePhone').value = profile.phone || user.phone || '';
+
+            if (!profile.defaultAddressId && profile.addresses.length) {
+                profile.defaultAddressId = profile.addresses[0].id;
+            }
+            saveProfile(profile);
+
+            // render profile content
+            renderAddresses(profile);
+            renderTabs(profile);
+
+            // Tab switching
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            function showTab(tabName) {
+                const tabs = ['profile','serviceHistory','orderHistory','connectionHistory'];
+                tabs.forEach(t => {
+                    const el = document.getElementById('tab-' + t);
+                    if (!el) return;
+                    if (t === tabName) el.classList.remove('hidden');
+                    else el.classList.add('hidden');
+                });
+
+                tabButtons.forEach(btn => {
+                    const active = btn.getAttribute('data-tab') === tabName;
+                    if (active) {
+                        btn.classList.add('bg-blue-50','text-primary','border','border-blue-100');
+                        btn.classList.remove('bg-white','text-gray-700','hover:bg-gray-50','border-gray-200');
+                    } else {
+                        btn.classList.remove('bg-blue-50','text-primary','border','border-blue-100');
+                        btn.classList.add('bg-white','text-gray-700','hover:bg-gray-50','border-gray-200');
+                    }
+                });
+            }
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => showTab(btn.getAttribute('data-tab')));
+            });
+
+            // default tab
+            showTab('profile');
+
+            // Save profile button
+            document.getElementById('saveProfileBtn').addEventListener('click', () => {
+                profile.name = document.getElementById('profileName').value.trim();
+                profile.phone = document.getElementById('profilePhone').value.trim();
+                if (!profile.addresses) profile.addresses = [];
+
+                saveProfile(profile);
+                alert('Profile saved!');
+                renderAddresses(profile);
+                renderTabs(profile);
+            });
+
+            // Add/Update address button
+            document.getElementById('addAddressBtn').addEventListener('click', () => {
+                const label = document.getElementById('newAddrLabel').value.trim();
+                const address = document.getElementById('newAddrText').value.trim();
+                const landmark = document.getElementById('newAddrLandmark').value.trim();
+                const addrPhone = document.getElementById('newAddrPhone').value.trim();
+                const editId = document.getElementById('addAddressBtn').dataset.editId || '';
+
+                if (!label || !address) {
+                    alert('Please fill Label and Address');
+                    return;
+                }
+
+                if (editId) {
+                    const idx = profile.addresses.findIndex(a => a.id === editId);
+                    if (idx !== -1) {
+                        profile.addresses[idx] = { ...profile.addresses[idx], label, address, landmark, phone: addrPhone };
+                    }
+                    saveProfile(profile);
+                    resetAddressForm();
+                    renderAddresses(profile);
+                    return;
+                }
+
+                const newAddr = { id: uid(), label, address, landmark, phone: addrPhone };
+                profile.addresses.push(newAddr);
+
+                if (!profile.defaultAddressId) profile.defaultAddressId = newAddr.id;
+
+                saveProfile(profile);
+                resetAddressForm();
+                renderAddresses(profile);
+            });
+
+            // Delegated click events for edit/delete + default selection
+            document.getElementById('addressesContainer').addEventListener('click', (e) => {
+                const delBtn = e.target.closest('.deleteAddrBtn');
+                const editBtn = e.target.closest('.editAddrBtn');
+                if (delBtn) {
+                    const id = delBtn.dataset.id;
+                    profile.addresses = profile.addresses.filter(a => a.id !== id);
+                    if (profile.defaultAddressId === id) {
+                        profile.defaultAddressId = profile.addresses[0]?.id || '';
+                    }
+                    saveProfile(profile);
+                    renderAddresses(profile);
+                    return;
+                }
+
+                if (editBtn) {
+                    const id = editBtn.dataset.id;
+                    const addr = profile.addresses.find(a => a.id === id);
+                    setFormFromAddress(addr);
+                    return;
+                }
+            });
+
+            document.getElementById('addressesContainer').addEventListener('change', (e) => {
+                const target = e.target;
+                if (target && target.name === 'defaultAddress') {
+                    profile.defaultAddressId = target.value;
+                    saveProfile(profile);
+                    renderAddresses(profile);
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

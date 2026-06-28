@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Buy Electric Meters - Bijli Ghar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { primary: '#1e3a8a', secondary: '#f59e0b' } 
+                } 
+            } 
+        }
+    </script>
+    <style>
+        /* Make number input spinners visible and larger */
+        input[type="number"] {
+            padding-right: 4px !important;
+        }
+        
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: inner-spin-button !important;
+            opacity: 1 !important;
+            height: 100% !important;
+            width: 32px !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    
+    <!-- Dark overlay to ensure text remains readable and matching the theme -->
+    <div class="absolute inset-0 bg-blue-900/85 z-0 pointer-events-none"></div>
+
+    <!-- UNIVERSAL NAVIGATION BAR -->
+    <nav class="bg-primary/95 backdrop-blur-md text-white shadow-xl sticky top-0 z-50 border-b border-blue-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+            <a href="index.html" class="flex items-center hover:text-yellow-400 transition transform hover:scale-105">
+                <i class="fas fa-bolt text-secondary text-2xl mr-2 drop-shadow-md"></i>
+                <span class="font-bold text-xl tracking-wider">BIJLI GHAR</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a id="nav-home" href="index.html" class="hover:text-secondary font-semibold transition">Home</a>
+                <a id="nav-about" href="about.html" class="hover:text-secondary font-semibold transition">About</a>
+                <a id="nav-meters" href="meters.html" class="text-secondary font-bold border-b-2 border-secondary pb-1 transition">Meters</a>
+                <a id="nav-services" href="services.html" class="hover:text-secondary font-semibold transition">Services</a>
+                <a id="nav-connection" href="connection.html" class="hover:text-secondary font-semibold transition">New Connection</a>
+            
+            </div>
+
+            <div class="hidden md:flex items-center space-x-3">
+                <!-- Language selector inside navbar -->
+                <select id="site-lang" class="bg-blue-800/60 backdrop-blur border border-blue-300/30 text-white text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-secondary shadow cursor-pointer">
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                </select>
+                <a href="cart.html" class="relative text-white hover:text-secondary flex items-center mx-4 transition transform hover:scale-110">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span id="nav-cart-badge" class="absolute -top-2 -right-3 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow hidden">0</span>
+                </a>
+                <div id="auth-btn-container" class="flex items-center space-x-3 ml-2"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow py-16 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-lg mb-4">Premium Electric Meters</h1>
+            <p class="text-blue-200 text-lg">Certified equipment for domestic and commercial use.</p>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <!-- METER 1: Indotech 1-Phase -->
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 transition duration-300 hover:shadow-[0_0_30px_rgba(245,158,11,0.2)] hover:-translate-y-1 flex flex-col">
+                
+                <!-- RESTORED: Image Gallery -->
+                <div class="relative flex flex-col items-center mb-6 w-full">
+                    <span class="absolute top-0 right-0 bg-red-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-md z-10">31% OFF</span>
+                    
+                    <div class="bg-white rounded-xl h-48 w-full flex items-center justify-center border border-blue-100 p-2 mb-3 shadow-inner">
+                        <img id="mainImg1" src="indo1.webp" onerror="this.src='https://via.placeholder.com/200?text=Indotech+Meter'" alt="Indotech Meter" class="h-full object-contain mix-blend-multiply">
+                    </div>
+                    
+                    <div class="flex justify-center space-x-2">
+                        <img src="indo1.webp" onclick="swapImage('mainImg1', this.src)" class="w-12 h-12 border-2 border-transparent hover:border-primary rounded cursor-pointer object-cover bg-white shadow-sm transition">
+                        <img src="indo2.webp" onclick="swapImage('mainImg1', this.src)" class="w-12 h-12 border-2 border-transparent hover:border-primary rounded cursor-pointer object-cover bg-white shadow-sm transition">
+                    </div>
+                </div>
+                
+                <h3 class="text-2xl font-bold text-gray-900 mb-1">Indotech 1-Phase Meter</h3>
+                <p class="text-gray-500 text-sm mb-4">Standard Basic Unit (Without Box)</p>
+                
+                <div class="flex items-center space-x-3 mb-6">
+                    <span class="text-primary font-extrabold text-3xl">₹1,000</span>
+                    <span class="text-gray-400 font-semibold line-through text-lg">₹1,450</span>
+                </div>
+                
+                <!-- Detailed Specs -->
+                <ul class="text-sm text-gray-700 space-y-2 mb-6 flex-grow border-t border-gray-100 pt-6">
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Brand:</strong>&nbsp; Indotech</li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Material:</strong>&nbsp; Plastic</li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Color:</strong>&nbsp; Blue</li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Certification:</strong>&nbsp; Test Certificate</li>
+                </ul>
+                
+                <div class="mt-auto border-t border-gray-100 pt-6 relative">
+                    
+                    <!-- NEW: Live Cart Quantity Indicator -->
+                    <div id="in-cart-1" class="hidden mb-3 text-center bg-green-50 text-green-700 text-sm font-extrabold py-2 px-3 rounded-lg border border-green-200 shadow-sm transition-all duration-300">
+                        <i class="fas fa-check-circle mr-1 text-green-600"></i> <span id="in-cart-qty-1">0</span> currently in cart
+                    </div>
+
+                    <div class="flex items-center justify-between mb-4 bg-gray-50 p-3 rounded-xl border border-gray-200 shadow-inner">
+                        <label class="font-bold text-gray-700">Quantity:</label>
+                        <div class="flex items-center space-x-2 bg-white border border-gray-300 rounded-lg p-1">
+                            <button type="button" onclick="decreaseQty('qty-1')" class="w-8 h-8 bg-red-500 hover:bg-red-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">−</button>
+                            <input type="number" id="qty-1" value="1" min="1" max="50" class="w-12 bg-white border-0 text-center font-bold text-primary focus:outline-none">
+                            <button type="button" onclick="increaseQty('qty-1')" class="w-8 h-8 bg-green-500 hover:bg-green-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">+</button>
+                        </div>
+                    </div>
+                    <button id="btn-1" onclick="addToCart('Indotech 1-Phase Meter (No Box)', 1000, 'qty-1', 'btn-1', 1)" class="w-full bg-primary text-white font-black py-4 rounded-xl hover:bg-blue-800 transition duration-300 shadow-md flex justify-center items-center">
+                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- METER 2: Indotech Box Meter -->
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 transition duration-300 hover:shadow-[0_0_30px_rgba(245,158,11,0.2)] hover:-translate-y-1 flex flex-col">
+                
+                <!-- RESTORED: Image Gallery -->
+                <div class="relative flex flex-col items-center mb-6 w-full">
+                    <span class="absolute top-0 right-0 bg-red-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-md z-10">29% OFF</span>
+                    
+                    <div class="bg-white rounded-xl h-48 w-full flex items-center justify-center border border-blue-100 p-2 mb-3 shadow-inner">
+                        <img id="mainImg2" src="indobox1.webp" onerror="this.src='https://via.placeholder.com/200?text=Box+Meter'" alt="Indotech Box Meter" class="h-full object-contain mix-blend-multiply">
+                    </div>
+                    
+                    <div class="flex justify-center space-x-2">
+                        <img src="indobox1.webp" onclick="swapImage('mainImg2', this.src)" class="w-12 h-12 border-2 border-transparent hover:border-primary rounded cursor-pointer object-cover bg-white shadow-sm transition">
+                        <img src="indobox2.webp" onclick="swapImage('mainImg2', this.src)" class="w-12 h-12 border-2 border-transparent hover:border-primary rounded cursor-pointer object-cover bg-white shadow-sm transition">
+                        <img src="indobox3.webp" onclick="swapImage('mainImg2', this.src)" class="w-12 h-12 border-2 border-transparent hover:border-primary rounded cursor-pointer object-cover bg-white shadow-sm transition">
+                    </div>
+                </div>
+                
+                <h3 class="text-2xl font-bold text-gray-900 mb-1">Indotech Box Meter</h3>
+                <p class="text-gray-500 text-sm mb-4">Complete Set with Protective Housing</p>
+                
+                <div class="flex items-center space-x-3 mb-6">
+                    <span class="text-primary font-extrabold text-3xl">₹1,300</span>
+                    <span class="text-gray-400 font-semibold line-through text-lg">₹1,850</span>
+                </div>
+                
+                <!-- Detailed Specs -->
+                <ul class="text-sm text-gray-700 space-y-2 mb-6 flex-grow border-t border-gray-100 pt-6">
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Type:</strong>&nbsp; Standard Box</li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Suitable Area:</strong>&nbsp; Wall Mount</li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Dimensions:</strong>&nbsp; 16 x 16 x 10 cm</li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Hardware:</strong>&nbsp; Bar Hanger Included</li>
+                </ul>
+                
+                <div class="mt-auto border-t border-gray-100 pt-6 relative">
+                    
+                    <!-- NEW: Live Cart Quantity Indicator -->
+                    <div id="in-cart-2" class="hidden mb-3 text-center bg-green-50 text-green-700 text-sm font-extrabold py-2 px-3 rounded-lg border border-green-200 shadow-sm transition-all duration-300">
+                        <i class="fas fa-check-circle mr-1 text-green-600"></i> <span id="in-cart-qty-2">0</span> currently in cart
+                    </div>
+
+                    <div class="flex items-center justify-between mb-4 bg-gray-50 p-3 rounded-xl border border-gray-200 shadow-inner">
+                        <label class="font-bold text-gray-700">Quantity:</label>
+                        <div class="flex items-center space-x-2 bg-white border border-gray-300 rounded-lg p-1">
+                            <button type="button" onclick="decreaseQty('qty-2')" class="w-8 h-8 bg-red-500 hover:bg-red-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">−</button>
+                            <input type="number" id="qty-2" value="1" min="1" max="50" class="w-12 bg-white border-0 text-center font-bold text-primary focus:outline-none">
+                            <button type="button" onclick="increaseQty('qty-2')" class="w-8 h-8 bg-green-500 hover:bg-green-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">+</button>
+                        </div>
+                    </div>
+                    <button id="btn-2" onclick="addToCart('Indotech Box Meter', 1300, 'qty-2', 'btn-2', 2)" class="w-full bg-primary text-white font-black py-4 rounded-xl hover:bg-blue-800 transition duration-300 shadow-md flex justify-center items-center">
+                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- METER 3: L&T Three Phase -->
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 transition duration-300 hover:shadow-[0_0_30px_rgba(245,158,11,0.2)] hover:-translate-y-1 flex flex-col">
+                
+                <!-- RESTORED: Image Gallery -->
+                <div class="relative flex flex-col items-center mb-6 w-full">
+                    <span class="absolute top-0 right-0 bg-red-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-md z-10">23% OFF</span>
+                    
+                    <div class="bg-white rounded-xl h-48 w-full flex items-center justify-center border border-blue-100 p-2 mb-3 shadow-inner">
+                        <img id="mainImg3" src="3 phase.jpg" onerror="this.src='https://via.placeholder.com/200?text=L%26T+Meter'" alt="L&T Three Phase" class="h-full object-contain mix-blend-multiply">
+                    </div>
+                    
+                    <div class="flex justify-center space-x-2">
+                        <img src="3 phase.jpg" onclick="swapImage('mainImg3', this.src)" class="w-12 h-12 border-2 border-transparent hover:border-primary rounded cursor-pointer object-cover bg-white shadow-sm transition">
+                        <img src="3 phase 2.jpg" onclick="swapImage('mainImg3', this.src)" class="w-12 h-12 border-2 border-transparent hover:border-primary rounded cursor-pointer object-cover bg-white shadow-sm transition">
+                    </div>
+                </div>
+                
+                <h3 class="text-2xl font-bold text-gray-900 mb-1">L&T Three Phase Meter</h3>
+                <p class="text-gray-500 text-sm mb-4">Heavy Duty Industrial/Commercial Grade</p>
+                
+                <div class="flex items-center space-x-3 mb-6">
+                    <span class="text-primary font-extrabold text-3xl">₹3,800</span>
+                    <span class="text-gray-400 font-semibold line-through text-lg">₹4,980</span>
+                </div>
+                
+                <!-- Detailed Specs -->
+                <ul class="text-sm text-gray-700 space-y-2 mb-6 flex-grow border-t border-gray-100 pt-6">
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Brand:</strong>&nbsp; L&T (Larsen & Toubro)</li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Phase:</strong>&nbsp; 3-Phase Smart Meter</li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Use Case:</strong>&nbsp; Heavy Load / Commercial</li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Accuracy:</strong>&nbsp; High Precision Reading</li>
+                </ul>
+                
+                <div class="mt-auto border-t border-gray-100 pt-6 relative">
+                    
+                    <!-- NEW: Live Cart Quantity Indicator -->
+                    <div id="in-cart-3" class="hidden mb-3 text-center bg-green-50 text-green-700 text-sm font-extrabold py-2 px-3 rounded-lg border border-green-200 shadow-sm transition-all duration-300">
+                        <i class="fas fa-check-circle mr-1 text-green-600"></i> <span id="in-cart-qty-3">0</span> currently in cart
+                    </div>
+
+                    <div class="flex items-center justify-between mb-4 bg-gray-50 p-3 rounded-xl border border-gray-200 shadow-inner">
+                        <label class="font-bold text-gray-700">Quantity:</label>
+                        <div class="flex items-center space-x-2 bg-white border border-gray-300 rounded-lg p-1">
+                            <button type="button" onclick="decreaseQty('qty-3')" class="w-8 h-8 bg-red-500 hover:bg-red-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">−</button>
+                            <input type="number" id="qty-3" value="1" min="1" max="50" class="w-12 bg-white border-0 text-center font-bold text-primary focus:outline-none" />
+                            <button type="button" onclick="increaseQty('qty-3')" class="w-8 h-8 bg-green-500 hover:bg-green-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">+</button>
+                        </div>
+                    </div>
+                    <button id="btn-3" onclick="addToCart('L&T Three Phase Meter', 3800, 'qty-3', 'btn-3', 3)" class="w-full bg-primary text-white font-black py-4 rounded-xl hover:bg-blue-800 transition duration-300 shadow-md flex justify-center items-center">
+                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- NEW UNIVERSAL MEGA FOOTER -->
+    <footer class="bg-gray-900 text-gray-300 pt-16 pb-8 mt-auto relative z-10 border-t-4 border-secondary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
+            <div>
+                <h3 class="text-2xl font-bold text-white mb-4 flex items-center"><i class="fas fa-bolt text-secondary mr-2"></i>BIJLI GHAR</h3>
+                <p class="text-sm text-gray-400 leading-relaxed pr-4">Your trusted partner for certified electrical equipment, secure installations, and fast JBVNL connections in Hazaribag.</p>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold text-white mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="about.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> About Us</a></li>
+                    <li><a href="meters.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Shop Meters</a></li>
+                    <li><a href="services.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Book Electrician</a></li>
+                    <li><a href="connection.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Apply for Connection</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold text-white mb-4">Contact Information</h4>
+                <ul class="space-y-4 text-sm">
+                    <li class="flex items-start">
+                        <i class="fas fa-map-marker-alt mt-1 mr-3 text-secondary text-lg"></i> 
+                        <span>Opposite Mission Hospital,<br>In front of JUVNL office,<br>Hazaribag, Jharkhand 825301</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope mr-3 text-secondary text-lg"></i> 
+<span>aniketkumar5893@gmail.com</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fab fa-whatsapp mr-3 text-secondary text-lg"></i>
+                        <a href="https://wa.me/918271747320" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400 transition">+91 82717 47320</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 max-w-7xl mx-auto px-4 pt-8 text-center text-sm text-gray-500">
+            <p>&copy; 2026 Bijli Ghar. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // Smooth image swapping function for the galleries
+        function swapImage(mainImageId, newSrc) {
+            document.getElementById(mainImageId).src = newSrc;
+        }
+
+        // Check local storage and display persistent "X in your cart" badges
+        function updateCartIndicators() {
+            const cart = JSON.parse(localStorage.getItem('bijliCart')) || [];
+
+            // Define the items and their matching DOM IDs
+            const items = [
+                { name: 'Indotech 1-Phase Meter (No Box)', id: 1 },
+                { name: 'Indotech Box Meter', id: 2 },
+                { name: 'L&T Three Phase Meter', id: 3 }
+            ];
+
+            items.forEach(item => {
+                const cartItem = cart.find(c => c.name === item.name);
+                const indicatorDiv = document.getElementById(`in-cart-${item.id}`);
+                const qtySpan = document.getElementById(`in-cart-qty-${item.id}`);
+
+                if (cartItem && cartItem.quantity > 0) {
+                    qtySpan.innerText = cartItem.quantity;
+                    indicatorDiv.classList.remove('hidden');
+                } else {
+                    indicatorDiv.classList.add('hidden');
+                }
+            });
+        }
+
+        // SMART ADD TO CART LOGIC WITH VISUAL FEEDBACK
+        function addToCart(name, price, qtyInputId, btnId, itemIndex) {
+            const qtyInput = document.getElementById(qtyInputId);
+            const qty = parseInt(qtyInput?.value);
+            
+            if (isNaN(qty) || qty < 1) {
+                alert("Please enter a valid quantity of 1 or more.");
+                return;
+            }
+
+
+            // Retrieve current cart from storage
+            let cart = JSON.parse(localStorage.getItem('bijliCart')) || [];
+            
+            // Check if item already exists in cart and update quantity
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += qty;
+            } else {
+                cart.push({ name: name, price: price, quantity: qty });
+            }
+
+            // Save updated cart to storage
+            localStorage.setItem('bijliCart', JSON.stringify(cart));
+
+            // Visual Button Feedback: Change color and show quantity added
+            const btn = document.getElementById(btnId);
+            const originalHtml = `<i class="fas fa-shopping-cart mr-2"></i> Add to Cart`;
+            
+            btn.innerHTML = `<i class="fas fa-check-circle mr-2"></i> Added ${qty} Item(s)!`;
+            btn.classList.remove('bg-primary', 'hover:bg-blue-800');
+            btn.classList.add('bg-green-600', 'hover:bg-green-700');
+            
+            // Reset the input box back to 1 for the next click
+            qtyInput.value = 1;
+
+            // Reset button styling after 2 seconds
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+                btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                btn.classList.add('bg-primary', 'hover:bg-blue-800');
+            }, 2000);
+
+            // Update badge and persistent indicators
+            updateNavBadge();
+            updateCartIndicators();
+        }
+
+        // INCREMENT/DECREMENT QUANTITY FUNCTIONS
+        function increaseQty(inputId) {
+            try {
+                const input = document.getElementById(inputId);
+                if (!input) return;
+
+                let value = parseInt(input.value, 10);
+                if (Number.isNaN(value) || value < 1) value = 1;
+                if (value < 50) input.value = value + 1;
+            } catch(e) {
+                console.error('Error increasing quantity:', e);
+            }
+        }
+
+        function decreaseQty(inputId) {
+            try {
+                const input = document.getElementById(inputId);
+                if (!input) return;
+
+                let value = parseInt(input.value, 10);
+                if (Number.isNaN(value) || value < 1) value = 1;
+                if (value > 1) input.value = value - 1;
+            } catch(e) {
+                console.error('Error decreasing quantity:', e);
+            }
+        }
+
+
+        // NAVIGATION BADGE UPDATER
+function updateNavBadge() {
+            const cart = JSON.parse(localStorage.getItem('bijliCart')) || [];
+            const badge = document.getElementById('nav-cart-badge');
+
+            const totalQty = cart.reduce((sum, item) => {
+                const qty = parseInt(item?.qty || item?.quantity || 0, 10);
+                return sum + (Number.isFinite(qty) ? qty : 0);
+            }, 0);
+
+            if (totalQty > 0) {
+                badge.innerText = totalQty;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // Initialize UI on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNavBadge();
+            updateCartIndicators();
+        });
+
+    </script>
+</body>
+</html>

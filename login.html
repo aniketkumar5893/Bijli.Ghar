@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login / Sign Up - Bijli Ghar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Firebase Auth (Core SDK only) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#1e3a8a', secondary: '#f59e0b' } } } }</script>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+    
+    <!-- UNIVERSAL NAVIGATION BAR -->
+    <nav class="bg-primary text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+            <a href="index.html" class="flex items-center hover:text-yellow-400 transition">
+                <i class="fas fa-bolt text-secondary text-2xl mr-2"></i>
+                <span class="font-bold text-xl tracking-wider">BIJLI GHAR</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a id="nav-home" href="index.html" class="hover:text-secondary font-semibold">Home</a>
+                <a id="nav-about" href="about.html" class="hover:text-secondary font-semibold">About</a>
+                <a id="nav-meters" href="meters.html" class="hover:text-secondary font-semibold">Meters</a>
+                <a id="nav-services" href="services.html" class="hover:text-secondary font-semibold">Services</a>
+                <a id="nav-connection" href="connection.html" class="hover:text-secondary font-semibold">New Connection</a>
+            
+            </div>
+            <div class="hidden md:flex items-center space-x-3">
+                <!-- Language selector inside navbar -->
+                <select id="site-lang" class="bg-blue-800/60 backdrop-blur border border-blue-300/30 text-white text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-secondary shadow cursor-pointer">
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                </select>
+                <a href="cart.html" class="relative text-white hover:text-secondary flex items-center mx-4">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span class="cart-count-badge absolute -top-2 -right-3 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow hidden">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CUSTOM LOGIN/REGISTER SECTION -->
+    <main class="flex-grow flex items-center justify-center py-16 px-4">
+        <div class="bg-white p-8 md:p-10 rounded-2xl shadow-2xl w-full max-w-md border border-gray-100 relative overflow-hidden">
+            <!-- Decorative background element -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -z-10"></div>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-100 text-primary rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-sm">
+                    <i class="fas fa-user-lock"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Welcome</h2>
+                <p class="text-gray-500 text-sm">Access your Bijli Ghar account.</p>
+            </div>
+
+            <!-- TABS -->
+            <div class="flex border-b border-gray-200 mb-6">
+                <button id="tab-login" onclick="switchTab('login')" class="w-1/2 py-3 font-bold text-primary border-b-2 border-primary transition">Sign In</button>
+                <button id="tab-register" onclick="switchTab('register')" class="w-1/2 py-3 font-bold text-gray-400 hover:text-primary transition border-b-2 border-transparent">Sign Up</button>
+            </div>
+            
+            <!-- Error Message Box -->
+            <div id="error-box" class="hidden bg-red-50 text-red-600 border border-red-200 text-sm p-3 rounded mb-4 text-center font-bold"></div>
+
+            <!-- LOGIN FORM -->
+            <form id="form-login" onsubmit="handleEmailLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Email Address</label>
+                    <input type="email" id="login-email" class="w-full p-3 border border-gray-300 rounded focus:outline-primary bg-gray-50" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="login-pass" class="w-full p-3 border border-gray-300 rounded focus:outline-primary bg-gray-50" required>
+                </div>
+                <button type="submit" id="btn-login" class="w-full bg-primary text-white py-3 rounded font-bold hover:bg-blue-800 transition shadow-md mt-2 flex justify-center items-center">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="form-register" onsubmit="handleEmailRegister(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Full Name</label>
+                    <input type="text" id="reg-name" class="w-full p-3 border border-gray-300 rounded focus:outline-primary bg-gray-50" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Email Address</label>
+                    <input type="email" id="reg-email" class="w-full p-3 border border-gray-300 rounded focus:outline-primary bg-gray-50" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Password <span class="text-xs text-gray-400 font-normal">(Min. 6 chars)</span></label>
+                    <input type="password" id="reg-pass" minlength="6" class="w-full p-3 border border-gray-300 rounded focus:outline-primary bg-gray-50" required>
+                </div>
+                <button type="submit" id="btn-register" class="w-full bg-secondary text-primary py-3 rounded font-bold hover:bg-yellow-500 transition shadow-md mt-2 flex justify-center items-center">
+                    Create Account
+                </button>
+            </form>
+
+            <!-- GOOGLE LOGIN BUTTON -->
+            <div class="mt-6">
+                <div class="relative flex items-center justify-center mb-4">
+                    <hr class="w-full border-gray-300">
+                    <span class="absolute bg-white px-3 text-sm text-gray-500 font-bold">OR</span>
+                </div>
+                <button onclick="handleGoogleLogin()" class="w-full bg-white border border-gray-300 text-gray-700 py-3 rounded font-bold flex items-center justify-center hover:bg-gray-50 transition shadow-sm">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5 mr-2" alt="G"> Continue with Google
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- NEW UNIVERSAL MEGA FOOTER -->
+    <footer class="bg-gray-900 text-gray-300 pt-16 pb-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
+            <div>
+                <h3 class="text-2xl font-bold text-white mb-4 flex items-center"><i class="fas fa-bolt text-secondary mr-2"></i>BIJLI GHAR</h3>
+                <p class="text-sm text-gray-400 leading-relaxed pr-4">Your trusted partner for certified electrical equipment, secure installations, and fast JBVNL connections in Hazaribag.</p>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold text-white mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="about.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> About Us</a></li>
+                    <li><a href="meters.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Shop Meters</a></li>
+                    <li><a href="services.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Book Electrician</a></li>
+                    <li><a href="connection.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Apply for Connection</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold text-white mb-4">Contact Information</h4>
+                <ul class="space-y-4 text-sm">
+                    <li class="flex items-start">
+                        <i class="fas fa-map-marker-alt mt-1 mr-3 text-secondary text-lg"></i> 
+                        <span>Opposite Mission Hospital,<br>In front of JUVNL office,<br>Hazaribag, Jharkhand 825301</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope mr-3 text-secondary text-lg"></i>
+                        <span>support@bijlighar.com</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fab fa-whatsapp mr-3 text-secondary text-lg"></i>
+                        <a href="https://wa.me/918271747320" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400 transition">+91 82717 47320</a>
+                    </li>
+
+
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 max-w-7xl mx-auto px-4 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+            <p>&copy; 2026 Bijli Ghar. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // 1. Firebase Initialization
+        const firebaseConfig = {
+            apiKey: "AIzaSyBtrFEewzah0kFrr8Ft9X27dLA8oC-LIy8",
+            authDomain: "bijli-ghar-170278.firebaseapp.com",
+            projectId: "bijli-ghar-170278",
+            storageBucket: "bijli-ghar-170278.firebasestorage.app",
+            messagingSenderId: "237799304551",
+            appId: "1:237799304551:web:64a11917aad8f06efc13c2"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // 2. Tab Switching Logic
+        function switchTab(tab) {
+            document.getElementById('error-box').classList.add('hidden'); // Clear errors on switch
+            
+            if (tab === 'login') {
+                document.getElementById('form-login').classList.remove('hidden');
+                document.getElementById('form-register').classList.add('hidden');
+                document.getElementById('tab-login').classList.replace('text-gray-400', 'text-primary');
+                document.getElementById('tab-login').classList.replace('border-transparent', 'border-primary');
+                document.getElementById('tab-register').classList.replace('text-primary', 'text-gray-400');
+                document.getElementById('tab-register').classList.replace('border-primary', 'border-transparent');
+            } else {
+                document.getElementById('form-register').classList.remove('hidden');
+                document.getElementById('form-login').classList.add('hidden');
+                document.getElementById('tab-register').classList.replace('text-gray-400', 'text-primary');
+                document.getElementById('tab-register').classList.replace('border-transparent', 'border-primary');
+                document.getElementById('tab-login').classList.replace('text-primary', 'text-gray-400');
+                document.getElementById('tab-login').classList.replace('border-primary', 'border-transparent');
+            }
+        }
+
+        // Error helper (Updated to support HTML links)
+        function showError(msg) {
+            const errBox = document.getElementById('error-box');
+            errBox.innerHTML = msg; 
+            errBox.classList.remove('hidden');
+        }
+
+        // Global save user logic
+        function saveUserLocallyAndRedirect(user, overrideName) {
+            const userData = { 
+                name: user.displayName || overrideName || "Valued Customer", 
+                email: user.email, 
+                uid: user.uid, 
+                phone: user.phoneNumber || "" 
+            };
+            localStorage.setItem('bijliUser', JSON.stringify(userData));
+            window.location.assign('account.html'); 
+        }
+
+        // 3. Login Flow (With Smart Redirection)
+        function handleEmailLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            const btn = document.getElementById('btn-login');
+            
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Signing in...`;
+            btn.disabled = true;
+
+            auth.signInWithEmailAndPassword(email, pass)
+                .then((userCredential) => {
+                    saveUserLocallyAndRedirect(userCredential.user, "");
+                })
+                .catch((error) => {
+                    if (error.code === 'auth/user-not-found') {
+                        // Directly switch to register if we know the user doesn't exist
+                        document.getElementById('reg-email').value = email;
+                        document.getElementById('reg-pass').value = pass;
+                        switchTab('register');
+                        showError("Account not found. We've switched you to Sign Up so you can create one!");
+                    } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                        // Firebase uses generic 'invalid-credential' for security. We give them a quick link to register.
+                        showError(`Invalid email or password. <br><button type="button" onclick="document.getElementById('reg-email').value='${email}'; switchTab('register');" class="mt-2 text-primary font-bold hover:text-blue-800 underline">No account? Click here to Sign Up.</button>`);
+                    } else {
+                        showError(error.message);
+                    }
+                    btn.innerHTML = "Sign In";
+                    btn.disabled = false;
+                });
+        }
+
+        // 4. Register Flow
+        function handleEmailRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+            const btn = document.getElementById('btn-register');
+            
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Creating Account...`;
+            btn.disabled = true;
+
+            auth.createUserWithEmailAndPassword(email, pass)
+                .then((userCredential) => {
+                    return userCredential.user.updateProfile({
+                        displayName: name
+                    }).then(() => {
+                        saveUserLocallyAndRedirect(userCredential.user, name);
+                    });
+                })
+                .catch((error) => {
+                    let friendlyMsg = error.message;
+                    if(error.code === 'auth/email-already-in-use') {
+                        friendlyMsg = `This email is already registered. <br><button type="button" onclick="document.getElementById('login-email').value='${email}'; switchTab('login');" class="mt-2 text-primary font-bold hover:text-blue-800 underline">Click here to Sign In.</button>`;
+                    }
+                    showError(friendlyMsg);
+                    btn.innerHTML = "Create Account";
+                    btn.disabled = false;
+                });
+        }
+
+        // 5. Google Flow
+        function handleGoogleLogin() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    saveUserLocallyAndRedirect(result.user, "");
+                })
+                .catch((error) => {
+                    showError(error.message);
+                });
+        }
+    </script>
+</body>
+</html>

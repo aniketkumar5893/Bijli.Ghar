@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Services - Bijli Ghar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { primary: '#1e3a8a', secondary: '#f59e0b' },
+                    animation: { 'fade-in-up': 'fadeInUp 0.6s ease-out forwards' },
+                    keyframes: { fadeInUp: { '0%': { opacity: 0, transform: 'translateY(20px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } } }
+                } 
+            } 
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    
+    <!-- Dark overlay to ensure text remains readable -->
+    <div class="absolute inset-0 bg-blue-900/85 z-0 pointer-events-none"></div>
+
+    <!-- UNIVERSAL NAVIGATION BAR -->
+    <nav class="bg-primary/95 backdrop-blur-md text-white shadow-xl sticky top-0 z-50 border-b border-blue-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+            <a href="index.html" class="flex items-center hover:text-yellow-400 transition transform hover:scale-105">
+                <i class="fas fa-bolt text-secondary text-2xl mr-2 drop-shadow-md"></i>
+                <span class="font-bold text-xl tracking-wider">BIJLI GHAR</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a id="nav-home" href="index.html" class="hover:text-secondary font-semibold transition">Home</a>
+                <a id="nav-about" href="about.html" class="hover:text-secondary font-semibold transition">About</a>
+                <a id="nav-meters" href="meters.html" class="hover:text-secondary font-semibold transition">Meters</a>
+                <a id="nav-services" href="services.html" class="text-secondary font-bold border-b-2 border-secondary pb-1 transition">Services</a>
+                <a id="nav-connection" href="connection.html" class="hover:text-secondary font-semibold transition">New Connection</a>
+            
+            </div>
+
+            <div class="hidden md:flex items-center space-x-3">
+                <!-- Language selector inside navbar -->
+                <select id="site-lang" class="bg-blue-800/60 backdrop-blur border border-blue-300/30 text-white text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-secondary shadow cursor-pointer">
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                </select>
+                <a href="cart.html" class="relative text-white hover:text-secondary flex items-center mx-4 transition transform hover:scale-110">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span class="cart-count-badge absolute -top-2 -right-3 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow hidden">0</span>
+                </a>
+                <div id="auth-btn-container" class="flex items-center space-x-3 ml-2"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow py-16 relative z-10 animate-fade-in-up">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center mb-16">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-lg mb-4">Professional Installation & Repairs</h1>
+                <p class="text-blue-200 text-lg max-w-2xl mx-auto">Book certified electricians for meter fitting or custom troubleshooting directly to your home.</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-center gap-8 mb-20">
+                <!-- Service 1 -->
+                <div class="bg-white/95 backdrop-blur-xl border-t-4 border-primary p-8 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_60px_rgba(30,58,138,0.5)] transform hover:-translate-y-2 transition duration-300 flex-1 relative overflow-hidden group border-x border-b border-white/20">
+                    <i class="fas fa-tools text-6xl text-blue-50 absolute top-6 right-6 z-0 group-hover:scale-110 transition duration-500 group-hover:text-blue-100"></i>
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-extrabold mb-2 text-primary">Meter Fitting</h3>
+                        <p class="text-gray-600 mb-8 h-12 font-medium">Complete professional installation from the main pole to your internal switchboard.</p>
+                        <p class="text-4xl font-black text-gray-900 mb-8">₹1,000</p>
+                        <button onclick="openBookingModal('Meter Fitting', 1000)" class="bg-primary text-white px-6 py-4 rounded-xl font-black w-full hover:bg-blue-800 hover:shadow-lg hover:-translate-y-1 transition duration-300 text-lg shadow-md flex justify-center items-center">
+                            <i class="fas fa-bolt mr-2"></i> Book & Pay
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="bg-white/95 backdrop-blur-xl border-t-4 border-secondary p-8 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_60px_rgba(245,158,11,0.3)] transform hover:-translate-y-2 transition duration-300 flex-1 relative overflow-hidden group border-x border-b border-white/20">
+                    <i class="fas fa-sync-alt text-6xl text-yellow-50 absolute top-6 right-6 z-0 group-hover:scale-110 group-hover:rotate-180 transition duration-700 group-hover:text-yellow-100"></i>
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-extrabold mb-2 text-gray-900">Meter Replacement</h3>
+                        <p class="text-gray-600 mb-8 h-12 font-medium">Safe removal of your old/faulty meter and installation of a new unit.</p>
+                        <p class="text-4xl font-black text-primary mb-8">₹500</p>
+                        <button onclick="openBookingModal('Meter Replacement', 500)" class="bg-secondary text-primary px-6 py-4 rounded-xl font-black w-full hover:bg-yellow-400 hover:shadow-lg hover:-translate-y-1 transition duration-300 text-lg shadow-md flex justify-center items-center">
+                            <i class="fas fa-bolt mr-2"></i> Book & Pay
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Inquiry Box (Glassmorphic) -->
+            <div class="bg-white/10 backdrop-blur-md p-2 rounded-[2rem] shadow-2xl border border-white/20">
+                <div class="bg-white/95 rounded-3xl p-8 md:p-12">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 text-primary mb-6 shadow-sm">
+                                <i class="fas fa-user-cog text-3xl"></i>
+                            </div>
+                            <h2 class="text-3xl font-extrabold text-primary mb-4 tracking-tight">Need a Custom Electrician?</h2>
+                            <p class="text-gray-600 mb-6 leading-relaxed font-medium">Having short circuits, wiring issues, or need an appliance installed? Submit a request and our expert will visit your home. <span class="text-secondary font-black">Pay only after inspection.</span></p>
+                            <ul class="space-y-4 mb-8 text-sm font-bold text-gray-700">
+                                <li class="flex items-center bg-gray-50 p-3 rounded-lg border border-gray-100"><i class="fas fa-check-circle text-green-500 mr-3 text-lg"></i> Fast Response Time</li>
+                                <li class="flex items-center bg-gray-50 p-3 rounded-lg border border-gray-100"><i class="fas fa-check-circle text-green-500 mr-3 text-lg"></i> Verified Professionals</li>
+                                <li class="flex items-center bg-gray-50 p-3 rounded-lg border border-gray-100"><i class="fas fa-check-circle text-green-500 mr-3 text-lg"></i> Transparent Estimates</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-8 rounded-2xl border border-gray-200 shadow-inner">
+                            <form id="customServiceForm" class="space-y-5">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">Your Name <span class="text-red-500">*</span></label>
+                                    <div class="relative group">
+                                        <i class="fas fa-user absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
+                                        <input type="text" id="custName" class="w-full bg-white border border-gray-300 text-gray-800 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm" required>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
+                                    <div class="relative group">
+                                        <i class="fas fa-phone-alt absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
+                                        <!-- THE FIX: Restricted to numbers only -->
+                                        <input type="tel" id="custPhone" class="w-full bg-white border border-gray-300 text-gray-800 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">Issue Details & Address <span class="text-red-500">*</span></label>
+                                    <div class="relative group">
+                                        <i class="fas fa-tools absolute left-4 top-4 text-gray-400 group-focus-within:text-primary transition"></i>
+                                        <textarea id="custIssue" placeholder="Describe issue and provide full address..." rows="4" class="w-full bg-white border border-gray-300 text-gray-800 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm resize-none custom-scrollbar" required></textarea>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="bg-primary text-white px-6 py-4 rounded-xl font-black hover:bg-blue-800 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 w-full shadow-md flex items-center justify-center text-lg mt-2">
+                                    <i class="fas fa-paper-plane mr-2"></i> Submit Request
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- BOOKING MODAL -->
+    <div id="bookingModal" class="hidden fixed inset-0 bg-primary/90 z-[100] flex items-center justify-center p-4 backdrop-blur-md transition-opacity">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md relative overflow-hidden border border-white/20">
+            <div class="bg-primary p-6 text-white flex justify-between items-center">
+                <h2 class="text-2xl font-extrabold flex items-center"><i class="fas fa-bolt text-secondary mr-2"></i> <span id="modalTitle">Book Service</span></h2>
+                <button onclick="closeBookingModal()" class="text-blue-200 hover:text-white transition transform hover:scale-110 bg-blue-800/50 rounded-full w-8 h-8 flex items-center justify-center">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-8 bg-gray-50">
+                <form id="modalForm" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
+                        <div class="relative group">
+                            <i class="fas fa-user absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
+                            <input type="text" id="modalName" class="w-full bg-white border border-gray-300 text-gray-800 focus:ring-2 focus:ring-primary rounded-xl py-3 pl-10 pr-4 shadow-sm" required>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
+                        <div class="relative group">
+                            <i class="fas fa-phone-alt absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
+                            <!-- THE FIX: Restricted to numbers only -->
+                            <input type="tel" id="modalPhone" class="w-full bg-white border border-gray-300 text-gray-800 focus:ring-2 focus:ring-primary rounded-xl py-3 pl-10 pr-4 shadow-sm" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Full Installation Address <span class="text-red-500">*</span></label>
+                        <div class="relative group">
+                            <i class="fas fa-map-marker-alt absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
+                            <input type="text" id="modalLocation" class="w-full bg-white border border-gray-300 text-gray-800 focus:ring-2 focus:ring-primary rounded-xl py-3 pl-10 pr-4 shadow-sm" required>
+                        </div>
+                    </div>
+                    
+                    <label class="flex items-start space-x-3 bg-blue-50 p-4 border border-blue-200 rounded-xl cursor-pointer hover:bg-blue-100 transition mt-4 group">
+                        <input type="checkbox" id="modalMaterial" class="mt-1 w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary shadow-sm cursor-pointer" required>
+                        <span id="services-modal-material" class="text-gray-800 font-bold text-sm group-hover:text-primary transition">I confirm I have the required meters/materials ready. <span class="text-red-500">*</span></span>
+                    </label>
+
+                    <button type="submit" class="w-full bg-secondary text-primary py-4 rounded-xl font-black hover:bg-yellow-400 hover:shadow-lg hover:-translate-y-1 transition-all shadow-md mt-6 text-lg flex justify-center items-center">
+                        <i class="fas fa-lock mr-2"></i> Proceed to Pay <span id="modalPriceBtn" class="ml-1"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW UNIVERSAL MEGA FOOTER -->
+    <footer class="bg-gray-900 text-gray-300 pt-16 pb-8 mt-auto relative z-10 border-t-4 border-secondary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
+            <div>
+                <h3 class="text-2xl font-bold text-white mb-4 flex items-center"><i class="fas fa-bolt text-secondary mr-2"></i>BIJLI GHAR</h3>
+                <p id="footer-brand-desc" class="text-sm text-gray-400 leading-relaxed pr-4">Your trusted partner for certified electrical equipment, secure installations, and fast JBVNL connections in Hazaribag.</p>
+            </div>
+            <div>
+                <h4 id="footer-quick-links" class="text-lg font-bold text-white mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a id="footer-about-us" href="about.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> About Us</a></li>
+                    <li><a id="footer-shop-meters" href="meters.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Shop Meters</a></li>
+                    <li><a id="footer-book-electrician" href="services.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Book Electrician</a></li>
+                    <li><a id="footer-apply-connection" href="connection.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Apply for Connection</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 id="footer-contact-information" class="text-lg font-bold text-white mb-4">Contact Information</h4>
+                <ul class="space-y-4 text-sm">
+                    <li class="flex items-start">
+                        <i class="fas fa-map-marker-alt mt-1 mr-3 text-secondary text-lg"></i> 
+                        <span id="footer-address">Opposite Mission Hospital,<br>In front of JUVNL office,<br>Hazaribag, Jharkhand 825301</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope mr-3 text-secondary text-lg"></i>
+<span>aniketkumar5893@gmail.com</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fab fa-whatsapp mr-3 text-secondary text-lg"></i>
+                        <a href="https://wa.me/918271747320" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400 transition">+91 82717 47320</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 max-w-7xl mx-auto px-4 pt-8 text-center text-sm text-gray-500">
+            <p id="footer-copyright">&copy; 2026 Bijli Ghar. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+
+    <script src="main.js"></script>
+    <script>
+        // State
+        let currentService = ""; 
+        let currentPrice = 0;
+
+        // Modal Logic
+        function openBookingModal(serviceName, price) {
+            const user = JSON.parse(localStorage.getItem('bijliUser'));
+            if (!user) { alert("Please login to book a service."); window.location.assign('login.html'); return; }
+            
+            currentService = serviceName; 
+            currentPrice = price;
+            document.getElementById('modalTitle').innerText = `Book ${serviceName}`;
+            document.getElementById('modalPriceBtn').innerText = `(₹${price})`;
+            
+            // Auto-fill if user data exists
+            if(user.name) document.getElementById('modalName').value = user.name;
+            if(user.phone) document.getElementById('modalPhone').value = user.phone;
+            
+            document.getElementById('bookingModal').classList.remove('hidden');
+        }
+        
+        function closeBookingModal() { 
+            document.getElementById('bookingModal').classList.add('hidden'); 
+            document.getElementById('modalForm').reset(); 
+        }
+
+        // Fixed Service Payment Handler
+        document.getElementById('modalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = JSON.parse(localStorage.getItem('bijliUser'));
+            if (!user) { alert("Session expired. Please login again."); return; }
+
+            const itemDetails = `${currentService} | Material Ready: ${document.getElementById('modalMaterial').checked ? "Yes" : "No"}`;
+            const address = document.getElementById('modalLocation').value;
+
+            var options = {
+                "key": "rzp_test_T69VfOhy38d2hR", 
+                "amount": currentPrice * 100, 
+                "currency": "INR", 
+                "name": "Bijli Ghar", 
+                "description": currentService,
+                "handler": function (response) {
+                    
+                    const btn = document.querySelector('#modalForm button[type="submit"]');
+                    btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Saving...`;
+                    btn.disabled = true;
+
+                    fetch('http://localhost:3000/save-order', { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' }, 
+                        body: JSON.stringify({ 
+                            category: 'Service Booking', 
+                            name: document.getElementById('modalName').value, 
+                            phone: document.getElementById('modalPhone').value, 
+                            email: user.email || '',
+                            amount: currentPrice, 
+                            items: itemDetails, 
+                            address: address, 
+                            paymentId: response.razorpay_payment_id 
+                        }) 
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.success) throw new Error(data.error);
+
+                        // Secure History Saving Block
+                        const userId = user.uid || user.email || 'guest';
+                        const historyKey = 'bijliHistory_' + userId;
+                        let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+                        
+                        history.push({ 
+                            type: 'Service Booking', 
+                            date: new Date().toLocaleDateString(), 
+                            amount: currentPrice, 
+                            items: itemDetails + ` | Addr: ${address}`,
+                            status: 'Electrician Assigned', 
+                            id: response.razorpay_payment_id,
+                            customerPhone: document.getElementById('modalPhone').value,
+                            customerAddress: address
+                        });
+                        
+                        localStorage.setItem(historyKey, JSON.stringify(history));
+                        
+                        alert("Service Saved! We will call you shortly."); 
+                        window.location.assign('account.html');
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("⚠️ Error: Could not reach the database. Is 'node server.js' running?");
+                        btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Proceed to Pay (₹${currentPrice})`;
+                        btn.disabled = false;
+                    });
+                }
+            };
+            new Razorpay(options).open(); 
+        });
+
+        // Custom Electrician Inquiry Handler
+        document.getElementById('customServiceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = JSON.parse(localStorage.getItem('bijliUser'));
+            if (!user) { alert("Please login to submit a request."); window.location.assign('login.html'); return; }
+
+            const btn = document.querySelector('#customServiceForm button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...`;
+            btn.disabled = true;
+
+                    fetch('http://localhost:3000/save-order', { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' }, 
+                        body: JSON.stringify({ 
+                            category: 'Custom Inquiry', 
+                            name: document.getElementById('custName').value, 
+                            phone: document.getElementById('custPhone').value, 
+                            email: user.email || '',
+                            amount: 0, 
+                            items: "Custom Request", 
+                            address: document.getElementById('custIssue').value, 
+                            paymentId: "PAY_AFTER_INSPECTION" 
+                        }) 
+                    })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) throw new Error(data.error);
+
+                // Secure History Saving Block
+                const userId = user.uid || user.email || 'guest';
+                const historyKey = 'bijliHistory_' + userId;
+                let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+                
+                history.push({ 
+                    type: 'Service Inquiry', 
+                    date: new Date().toLocaleDateString(), 
+                    amount: 0, 
+                    items: "Custom Electrician Request", 
+                    status: 'Pending Call', 
+                    id: 'Lead_' + Math.floor(Math.random()*1000) 
+                });
+                
+                localStorage.setItem(historyKey, JSON.stringify(history));
+
+                alert("Request logged successfully! Our team will contact you soon."); 
+                document.getElementById('customServiceForm').reset();
+                window.location.assign('account.html');
+            })
+            .catch(err => {
+                console.error(err);
+                alert("⚠️ Error: Could not reach the database. Is 'node server.js' running?");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>

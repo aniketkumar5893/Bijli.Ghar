@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>About Us - Bijli Ghar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { primary: '#1e3a8a', secondary: '#f59e0b' },
+                    animation: { 
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards'
+                    },
+                    keyframes: { 
+                        fadeInUp: { '0%': { opacity: 0, transform: 'translateY(30px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } }
+                    }
+                } 
+            } 
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    
+    <div class="absolute inset-0 bg-blue-900/90 z-0 pointer-events-none"></div>
+
+    <nav class="bg-primary/95 backdrop-blur-md text-white shadow-xl sticky top-0 z-50 border-b border-blue-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+            <a href="index.html" class="flex items-center hover:text-yellow-400 transition transform hover:scale-105">
+                <i class="fas fa-bolt text-secondary text-2xl mr-2 drop-shadow-md"></i>
+                <span class="font-bold text-xl tracking-wider">BIJLI GHAR</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a id="nav-home" href="index.html" class="hover:text-secondary font-semibold transition">Home</a>
+                <a id="nav-about" href="about.html" class="text-secondary font-bold border-b-2 border-secondary pb-1 transition">About</a>
+                <a id="nav-meters" href="meters.html" class="hover:text-secondary font-semibold transition">Meters</a>
+                <a id="nav-services" href="services.html" class="hover:text-secondary font-semibold transition">Services</a>
+                <a id="nav-connection" href="connection.html" class="hover:text-secondary font-semibold transition">New Connection</a>
+            
+            </div>
+
+            <div class="hidden md:flex items-center space-x-3">
+                <!-- Language selector inside navbar -->
+                <select id="site-lang" class="bg-blue-800/60 backdrop-blur border border-blue-300/30 text-white text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-secondary shadow cursor-pointer">
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                </select>
+                <a href="cart.html" class="relative text-white hover:text-secondary flex items-center mx-4 transition transform hover:scale-110">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span id="nav-cart-badge" class="absolute -top-2 -right-3 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow hidden">0</span>
+                </a>
+                <div id="auth-btn-container" class="flex items-center space-x-3 ml-2"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow py-16 relative z-10 animate-fade-in-up">
+        
+        <div class="max-w-7xl mx-auto px-4 text-center mb-16">
+<span id="about-discover-story" class="inline-block py-1 px-3 rounded-full bg-blue-800/50 border border-blue-400/30 text-secondary text-sm font-bold tracking-wider mb-4 shadow-sm">
+                <i class="fas fa-info-circle mr-1"></i> DISCOVER OUR STORY
+            </span>
+            <h1 id="about-partner-title" class="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-lg mb-4">Your Trusted Electrical Partner</h1>
+            <p id="about-partner-desc" class="text-blue-200 text-lg max-w-2xl mx-auto font-medium">Providing safe, certified, and premium electrical solutions to Hazaribag and beyond.</p>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] border border-white/20 overflow-hidden mb-16">
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    
+                    <div class="p-10 md:p-16 flex flex-col justify-center">
+<h2 id="about-empowering-title" class="text-3xl md:text-4xl font-black text-primary mb-6 leading-tight">Empowering Homes & Businesses</h2>
+                        <p id="about-empowering-desc1" class="text-gray-600 text-lg mb-6 leading-relaxed">
+                            Founded with a commitment to safety and transparency, <strong>Bijli Ghar</strong> is Hazaribag's premier hub for all electrical needs. We eliminate the hassle of unverified electricians and substandard materials by bringing everything under one roof.
+                        </p>
+                        <p id="about-empowering-desc2" class="text-gray-600 text-lg mb-8 leading-relaxed">
+                            As authorized <strong>JBVNL Partners</strong>, we specialize in seamless new connections, providing certified 1-Phase and 3-Phase smart meters, and dispatching expert engineers for custom residential and commercial wiring solutions.
+                        </p>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-secondary border border-blue-100">
+                                <i class="fas fa-shield-alt text-2xl"></i>
+                            </div>
+                            <div>
+<h4 id="about-safety-title" class="font-bold text-gray-900 text-lg">100% Certified Safety</h4>
+                                <p id="about-safety-desc" class="text-sm text-gray-500">Government approved standards.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative min-h-[400px] lg:min-h-full">
+                        <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2069&auto=format&fit=crop" alt="Electrical Work" class="absolute inset-0 w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-r from-white/95 via-transparent to-transparent lg:block hidden"></div>
+                        <div class="absolute bottom-8 right-8 bg-white/90 backdrop-blur-sm p-5 rounded-2xl shadow-2xl border border-white">
+                            <div class="flex items-center space-x-4">
+                                <i class="fas fa-smile text-4xl text-secondary"></i>
+                                <div>
+                                    <p class="text-3xl font-black text-primary leading-none">5,000+</p>
+<p id="about-happy-customers" class="text-xs font-bold text-gray-500 uppercase tracking-wide mt-1">Happy Customers</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                
+                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20 text-center hover:-translate-y-2 transition-transform duration-300 shadow-xl group">
+                    <div class="w-20 h-20 mx-auto bg-blue-500/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-tachometer-alt text-4xl text-secondary"></i>
+                    </div>
+<h3 id="about-feature-1-title" class="text-2xl font-bold text-white mb-3">Premium Meters</h3>
+                    <p id="about-feature-1-desc" class="text-blue-100 leading-relaxed">We supply only industry-leading brands like Indotech and L&T, ensuring accurate readings and long-lasting durability.</p>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20 text-center hover:-translate-y-2 transition-transform duration-300 shadow-xl group">
+                    <div class="w-20 h-20 mx-auto bg-blue-500/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-hard-hat text-4xl text-secondary"></i>
+                    </div>
+<h3 id="about-feature-2-title" class="text-2xl font-bold text-white mb-3">Expert Engineers</h3>
+                    <p id="about-feature-2-desc" class="text-blue-100 leading-relaxed">Our team consists of highly trained and verified electricians equipped to handle everything from basic wiring to complex industrial loads.</p>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20 text-center hover:-translate-y-2 transition-transform duration-300 shadow-xl group">
+                    <div class="w-20 h-20 mx-auto bg-blue-500/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-bolt text-4xl text-secondary"></i>
+                    </div>
+<h3 id="about-feature-3-title" class="text-2xl font-bold text-white mb-3">Fast Connections</h3>
+                    <p id="about-feature-3-desc" class="text-blue-100 leading-relaxed">We bridge the gap between consumers and the electricity board, ensuring your new JBVNL connection is processed swiftly.</p>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 text-gray-300 pt-16 pb-8 mt-auto relative z-10 border-t-4 border-secondary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
+            <div>
+                <h3 class="text-2xl font-bold text-white mb-4 flex items-center"><i class="fas fa-bolt text-secondary mr-2"></i>BIJLI GHAR</h3>
+                <p id="footer-brand-desc" class="text-sm text-gray-400 leading-relaxed pr-4">Your trusted partner for certified electrical equipment, secure installations, and fast JBVNL connections in Hazaribag.</p>
+            </div>
+            <div>
+                <h4 id="footer-quick-links" class="text-lg font-bold text-white mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a id="footer-about-us" href="about.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> About Us</a></li>
+                    <li><a id="footer-shop-meters" href="meters.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Shop Meters</a></li>
+                    <li><a id="footer-book-electrician" href="services.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Book Electrician</a></li>
+                    <li><a id="footer-apply-connection" href="connection.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Apply for Connection</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 id="footer-contact-information" class="text-lg font-bold text-white mb-4">Contact Information</h4>
+                <ul class="space-y-4 text-sm">
+                    <li class="flex items-start">
+                        <i class="fas fa-map-marker-alt mt-1 mr-3 text-secondary text-lg"></i> 
+                        <span id="footer-address">Opposite Mission Hospital,<br>In front of JUVNL office,<br>Hazaribag, Jharkhand 825301</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope mr-3 text-secondary text-lg"></i> 
+<span>aniketkumar5893@gmail.com</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fab fa-whatsapp mr-3 text-secondary text-lg"></i>
+                        <a href="https://wa.me/918271747320" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400 transition">+91 82717 47320</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 max-w-7xl mx-auto px-4 pt-8 text-center text-sm text-gray-500">
+            <p id="footer-copyright">&copy; 2026 Bijli Ghar. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+
+    <script src="main.js"></script>
+    <script>
+        // --- CART BADGE LOGIC ---
+        function updateNavBadge() {
+            const cart = JSON.parse(localStorage.getItem('bijliCart')) || [];
+            const badge = document.getElementById('nav-cart-badge');
+            if (cart.length > 0) {
+                badge.innerText = cart.length;
+                badge.classList.remove('hidden');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateNavBadge);
+
+        // --- CHATBOT LOGIC ---
+        const chatWin = document.getElementById('chatbot-window');
+        const chatMsgs = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const repliesBox = document.getElementById('quick-replies');
+
+        function toggleChat() {
+            if (chatWin.classList.contains('hidden')) {
+                chatWin.classList.remove('hidden');
+                document.getElementById('chatbot-toggle').classList.remove('animate-bounce');
+                setTimeout(() => {
+                    chatWin.classList.remove('scale-95', 'opacity-0');
+                    chatWin.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            } else {
+                chatWin.classList.remove('scale-100', 'opacity-100');
+                chatWin.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => { chatWin.classList.add('hidden'); }, 300); 
+            }
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+            sendUserMsg(msg);
+            chatInput.value = '';
+        }
+
+        function sendUserMsg(msg) {
+            if (repliesBox) repliesBox.style.display = 'none';
+            const userDiv = document.createElement('div');
+            userDiv.className = "self-end bg-primary text-white p-3.5 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] text-sm font-medium animate-fade-in-up";
+            userDiv.innerText = msg;
+            chatMsgs.appendChild(userDiv);
+            chatMsgs.scrollTop = chatMsgs.scrollHeight;
+
+            setTimeout(() => { botReply(msg); }, 600);
+        }
+
+        function botReply(userMsg) {
+            const lowerMsg = userMsg.toLowerCase();
+            let reply = "I'm sorry, I didn't quite catch that. You can ask me about buying meters, applying for a new connection, or booking an electrician!";
+
+            if (lowerMsg.includes('meter') || lowerMsg.includes('buy') || lowerMsg.includes('price')) {
+                reply = 'Browse and buy premium electric meters from our <a href="meters.html" class="text-primary font-bold hover:underline">Meters page</a>. We offer both Single Phase and 3-Phase meters.';
+            } else if (lowerMsg.includes('connection') || lowerMsg.includes('new') || lowerMsg.includes('apply')) {
+                reply = 'Applying for a new JBVNL connection is easy! Head to our <a href="connection.html" class="text-primary font-bold hover:underline">New Connection setup</a> to fill out the form.';
+            } else if (lowerMsg.includes('electrician') || lowerMsg.includes('book') || lowerMsg.includes('repair')) {
+                reply = 'Need a fix? Check out our <a href="services.html" class="text-primary font-bold hover:underline">Services page</a> to book a certified electrician to visit your home.';
+            } else if (lowerMsg.includes('hello') || lowerMsg.includes('hi')) {
+                reply = 'Hello! How can I assist you with Bijli Ghar today?';
+            } else if (lowerMsg.includes('contact') || lowerMsg.includes('phone') || lowerMsg.includes('where')) {
+                reply = 'Reach our support team at <strong>support@bijlighar.com</strong> or visit us opposite Mission Hospital, Hazaribag.';
+            }
+
+            const botDiv = document.createElement('div');
+            botDiv.className = "self-start bg-white border border-gray-200 text-gray-800 p-3.5 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-sm font-medium animate-fade-in-up";
+            botDiv.innerHTML = reply;
+            chatMsgs.appendChild(botDiv);
+            chatMsgs.scrollTop = chatMsgs.scrollHeight;
+        }
+        // --- CHATBOT DRAG (global movable) ---
+        (function () {
+            const container = document.getElementById('chatbot-container');
+            const handle = document.getElementById('chatbot-drag-handle');
+            if (!container) return;
+
+            // Use the window as the drag surface; keep toggle clickable.
+            const target = handle || container;
+
+            let dragging = false;
+            let startX = 0, startY = 0;
+            let startLeft = 0, startTop = 0;
+
+            // Ensure container is fixed-positioned and tracked via left/top.
+            function ensurePositionVars() {
+                const rect = container.getBoundingClientRect();
+                // If user never dragged before, anchor from current fixed position.
+                if (!container.dataset.dragInitialized) {
+                    startLeft = rect.left;
+                    startTop = rect.top;
+                    container.style.left = startLeft + 'px';
+                    container.style.top = startTop + 'px';
+                    container.style.right = 'auto';
+                    container.style.bottom = 'auto';
+                    container.dataset.dragInitialized = '1';
+                }
+            }
+
+            function clamp(v, min, max) {
+                return Math.max(min, Math.min(max, v));
+            }
+
+            function onMove(clientX, clientY) {
+                if (!dragging) return;
+                const w = container.offsetWidth;
+                const h = container.offsetHeight;
+                const maxLeft = window.innerWidth - w;
+                const maxTop = window.innerHeight - h;
+
+                const newLeft = clamp(startLeft + (clientX - startX), 0, Math.max(0, maxLeft));
+                const newTop = clamp(startTop + (clientY - startY), 0, Math.max(0, maxTop));
+
+                container.style.left = newLeft + 'px';
+                container.style.top = newTop + 'px';
+                container.style.right = 'auto';
+                container.style.bottom = 'auto';
+            }
+
+            function onMouseDown(e) {
+                // left click only
+                if (e.button !== 0) return;
+                dragging = true;
+                ensurePositionVars();
+                startX = e.clientX;
+                startY = e.clientY;
+                const rect = container.getBoundingClientRect();
+                startLeft = rect.left;
+                startTop = rect.top;
+                target.style.cursor = 'grabbing';
+                e.preventDefault();
+            }
+
+            function onMouseMove(e) {
+                onMove(e.clientX, e.clientY);
+            }
+
+            function onMouseUp() {
+                if (!dragging) return;
+                dragging = false;
+                target.style.cursor = 'grab';
+            }
+
+            function onTouchStart(e) {
+                if (!e.touches || e.touches.length === 0) return;
+                dragging = true;
+                ensurePositionVars();
+                const t = e.touches[0];
+                startX = t.clientX;
+                startY = t.clientY;
+                const rect = container.getBoundingClientRect();
+                startLeft = rect.left;
+                startTop = rect.top;
+                target.style.cursor = 'grabbing';
+                e.preventDefault();
+            }
+
+            function onTouchMove(e) {
+                if (!e.touches || e.touches.length === 0) return;
+                const t = e.touches[0];
+                onMove(t.clientX, t.clientY);
+            }
+
+            function onTouchEnd() {
+                if (!dragging) return;
+                dragging = false;
+                target.style.cursor = 'grab';
+            }
+
+            // Set cursor
+            target.style.cursor = 'grab';
+
+            target.addEventListener('mousedown', onMouseDown);
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('mouseup', onMouseUp);
+
+            target.addEventListener('touchstart', onTouchStart, { passive: false });
+            window.addEventListener('touchmove', onTouchMove, { passive: false });
+            window.addEventListener('touchend', onTouchEnd);
+            window.addEventListener('touchcancel', onTouchEnd);
+        })();
+
+    </script>
+</body>
+</html>

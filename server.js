@@ -127,6 +127,7 @@ app.post('/save-connection', upload.any(), async (req, res) => {
             category: 'New Connection',
             name: connData.name,
             phone: connData.phone,
+            email: (connData.email || '').toString().trim(),
             address: connData.address,
             items: connData.items,
             amount: connData.amount,

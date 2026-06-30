@@ -1,5 +1,11 @@
 require('dotenv').config();
+
+// TO FORCE IPv4
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first'); 
 const express = require('express');
+const cors = require('cors');
+const nodemailer = require('nodemailer');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const path = require('path');

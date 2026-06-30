@@ -69,8 +69,8 @@
 
     <main class="flex-grow py-16 relative z-10">
         <div class="max-w-7xl mx-auto px-4 text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-lg mb-4">Premium Electric Meters</h1>
-            <p class="text-blue-200 text-lg">Certified equipment for domestic and commercial use.</p>
+            <h1 id="meters-page-title" class="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-lg mb-4">Premium Electric Meters</h1>
+            <p id="meters-page-desc" class="text-blue-200 text-lg">Certified equipment for domestic and commercial use.</p>
         </div>
 
         <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -92,8 +92,8 @@
                     </div>
                 </div>
                 
-                <h3 class="text-2xl font-bold text-gray-900 mb-1">Indotech 1-Phase Meter</h3>
-                <p class="text-gray-500 text-sm mb-4">Standard Basic Unit (Without Box)</p>
+                <h3 id="meters-card-1-title" class="text-2xl font-bold text-gray-900 mb-1">Indotech 1-Phase Meter</h3>
+                <p id="meters-card-1-subtitle" class="text-gray-500 text-sm mb-4">Standard Basic Unit (Without Box)</p>
                 
                 <div class="flex items-center space-x-3 mb-6">
                     <span class="text-primary font-extrabold text-3xl">₹1,000</span>
@@ -102,29 +102,29 @@
                 
                 <!-- Detailed Specs -->
                 <ul class="text-sm text-gray-700 space-y-2 mb-6 flex-grow border-t border-gray-100 pt-6">
-                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Brand:</strong>&nbsp; Indotech</li>
-                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Material:</strong>&nbsp; Plastic</li>
-                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Color:</strong>&nbsp; Blue</li>
-                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong>Certification:</strong>&nbsp; Test Certificate</li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong id="meters-card-1-spec-brand">Brand:</strong>&nbsp; <span id="meters-card-1-spec-brand-value">Indotech</span></li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong id="meters-card-1-spec-material">Material:</strong>&nbsp; <span id="meters-card-1-spec-material-value">Plastic</span></li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong id="meters-card-1-spec-color">Color:</strong>&nbsp; <span id="meters-card-1-spec-color-value">Blue</span></li>
+                    <li class="flex items-center"><i class="fas fa-check text-secondary mr-2"></i> <strong id="meters-card-1-spec-cert">Certification:</strong>&nbsp; <span id="meters-card-1-spec-cert-value">Test Certificate</span></li>
                 </ul>
                 
                 <div class="mt-auto border-t border-gray-100 pt-6 relative">
                     
                     <!-- NEW: Live Cart Quantity Indicator -->
                     <div id="in-cart-1" class="hidden mb-3 text-center bg-green-50 text-green-700 text-sm font-extrabold py-2 px-3 rounded-lg border border-green-200 shadow-sm transition-all duration-300">
-                        <i class="fas fa-check-circle mr-1 text-green-600"></i> <span id="in-cart-qty-1">0</span> currently in cart
+                        <i class="fas fa-check-circle mr-1 text-green-600"></i> <span id="in-cart-qty-1">0</span> <span id="meters-card-1-in-cart">currently in cart</span>
                     </div>
 
                     <div class="flex items-center justify-between mb-4 bg-gray-50 p-3 rounded-xl border border-gray-200 shadow-inner">
-                        <label class="font-bold text-gray-700">Quantity:</label>
+                        <label id="meters-card-1-qty-label" class="font-bold text-gray-700">Quantity:</label>
                         <div class="flex items-center space-x-2 bg-white border border-gray-300 rounded-lg p-1">
-                            <button type="button" onclick="decreaseQty('qty-1')" class="w-8 h-8 bg-red-500 hover:bg-red-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">−</button>
+                            <button type="button" onclick="decreaseQty('qty-1')"
                             <input type="number" id="qty-1" value="1" min="1" max="50" class="w-12 bg-white border-0 text-center font-bold text-primary focus:outline-none">
                             <button type="button" onclick="increaseQty('qty-1')" class="w-8 h-8 bg-green-500 hover:bg-green-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">+</button>
                         </div>
                     </div>
                     <button id="btn-1" onclick="addToCart('Indotech 1-Phase Meter (No Box)', 1000, 'qty-1', 'btn-1', 1)" class="w-full bg-primary text-white font-black py-4 rounded-xl hover:bg-blue-800 transition duration-300 shadow-md flex justify-center items-center">
-                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                        <i class="fas fa-shopping-cart mr-2"></i> <span id="meters-card-1-add">Add to Cart</span>
                     </button>
                 </div>
             </div>
@@ -147,8 +147,8 @@
                     </div>
                 </div>
                 
-                <h3 class="text-2xl font-bold text-gray-900 mb-1">Indotech Box Meter</h3>
-                <p class="text-gray-500 text-sm mb-4">Complete Set with Protective Housing</p>
+                <h3 id="meters-card-2-title" class="text-2xl font-bold text-gray-900 mb-1">Indotech Box Meter</h3>
+                <p id="meters-card-2-subtitle" class="text-gray-500 text-sm mb-4">Complete Set with Protective Housing</p>
                 
                 <div class="flex items-center space-x-3 mb-6">
                     <span class="text-primary font-extrabold text-3xl">₹1,300</span>
@@ -167,19 +167,19 @@
                     
                     <!-- NEW: Live Cart Quantity Indicator -->
                     <div id="in-cart-2" class="hidden mb-3 text-center bg-green-50 text-green-700 text-sm font-extrabold py-2 px-3 rounded-lg border border-green-200 shadow-sm transition-all duration-300">
-                        <i class="fas fa-check-circle mr-1 text-green-600"></i> <span id="in-cart-qty-2">0</span> currently in cart
+                        <i class="fas fa-check-circle mr-1 text-green-600"></i> <span id="in-cart-qty-2">0</span> <span id="meters-card-2-in-cart">currently in cart</span>
                     </div>
 
                     <div class="flex items-center justify-between mb-4 bg-gray-50 p-3 rounded-xl border border-gray-200 shadow-inner">
-                        <label class="font-bold text-gray-700">Quantity:</label>
+                        <label id="meters-card-2-qty-label" class="font-bold text-gray-700">Quantity:</label>
                         <div class="flex items-center space-x-2 bg-white border border-gray-300 rounded-lg p-1">
-                            <button type="button" onclick="decreaseQty('qty-2')" class="w-8 h-8 bg-red-500 hover:bg-red-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">−</button>
+                            <button type="button" onclick="decreaseQty('qty-2')"
                             <input type="number" id="qty-2" value="1" min="1" max="50" class="w-12 bg-white border-0 text-center font-bold text-primary focus:outline-none">
                             <button type="button" onclick="increaseQty('qty-2')" class="w-8 h-8 bg-green-500 hover:bg-green-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">+</button>
                         </div>
                     </div>
                     <button id="btn-2" onclick="addToCart('Indotech Box Meter', 1300, 'qty-2', 'btn-2', 2)" class="w-full bg-primary text-white font-black py-4 rounded-xl hover:bg-blue-800 transition duration-300 shadow-md flex justify-center items-center">
-                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                        <i class="fas fa-shopping-cart mr-2"></i> <span id="meters-card-2-add">Add to Cart</span>
                     </button>
                 </div>
             </div>
@@ -201,8 +201,8 @@
                     </div>
                 </div>
                 
-                <h3 class="text-2xl font-bold text-gray-900 mb-1">L&T Three Phase Meter</h3>
-                <p class="text-gray-500 text-sm mb-4">Heavy Duty Industrial/Commercial Grade</p>
+                <h3 id="meters-card-3-title" class="text-2xl font-bold text-gray-900 mb-1">L&T Three Phase Meter</h3>
+                <p id="meters-card-3-subtitle" class="text-gray-500 text-sm mb-4">Heavy Duty Industrial/Commercial Grade</p>
                 
                 <div class="flex items-center space-x-3 mb-6">
                     <span class="text-primary font-extrabold text-3xl">₹3,800</span>
@@ -221,19 +221,19 @@
                     
                     <!-- NEW: Live Cart Quantity Indicator -->
                     <div id="in-cart-3" class="hidden mb-3 text-center bg-green-50 text-green-700 text-sm font-extrabold py-2 px-3 rounded-lg border border-green-200 shadow-sm transition-all duration-300">
-                        <i class="fas fa-check-circle mr-1 text-green-600"></i> <span id="in-cart-qty-3">0</span> currently in cart
+                        <i class="fas fa-check-circle mr-1 text-green-600"></i> <span id="in-cart-qty-3">0</span> <span id="meters-card-3-in-cart">currently in cart</span>
                     </div>
 
                     <div class="flex items-center justify-between mb-4 bg-gray-50 p-3 rounded-xl border border-gray-200 shadow-inner">
-                        <label class="font-bold text-gray-700">Quantity:</label>
+                        <label id="meters-card-3-qty-label" class="font-bold text-gray-700">Quantity:</label>
                         <div class="flex items-center space-x-2 bg-white border border-gray-300 rounded-lg p-1">
-                            <button type="button" onclick="decreaseQty('qty-3')" class="w-8 h-8 bg-red-500 hover:bg-red-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">−</button>
+                            <button type="button" onclick="decreaseQty('qty-3')"
                             <input type="number" id="qty-3" value="1" min="1" max="50" class="w-12 bg-white border-0 text-center font-bold text-primary focus:outline-none" />
                             <button type="button" onclick="increaseQty('qty-3')" class="w-8 h-8 bg-green-500 hover:bg-green-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">+</button>
                         </div>
                     </div>
                     <button id="btn-3" onclick="addToCart('L&T Three Phase Meter', 3800, 'qty-3', 'btn-3', 3)" class="w-full bg-primary text-white font-black py-4 rounded-xl hover:bg-blue-800 transition duration-300 shadow-md flex justify-center items-center">
-                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                        <i class="fas fa-shopping-cart mr-2"></i> <span id="meters-card-3-add">Add to Cart</span>
                     </button>
                 </div>
             </div>
@@ -246,23 +246,23 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
             <div>
                 <h3 class="text-2xl font-bold text-white mb-4 flex items-center"><i class="fas fa-bolt text-secondary mr-2"></i>BIJLI GHAR</h3>
-                <p class="text-sm text-gray-400 leading-relaxed pr-4">Your trusted partner for certified electrical equipment, secure installations, and fast JBVNL connections in Hazaribag.</p>
+<p id="footer-brand-desc" class="text-sm text-gray-400 leading-relaxed pr-4">प्रमाणित इलेक्ट्रिकल उपकरण, सुरक्षित इंस्टॉलेशन और हजारीबाग में तेज़ JBVNL कनेक्शन के लिए आपका भरोसेमंद पार्टनर।</p>
             </div>
             <div>
-                <h4 class="text-lg font-bold text-white mb-4">Quick Links</h4>
+<h4 class="text-lg font-bold text-white mb-4"><span id="footer-quick-links">Quick Links</span></h4>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="about.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> About Us</a></li>
-                    <li><a href="meters.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Shop Meters</a></li>
-                    <li><a href="services.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Book Electrician</a></li>
-                    <li><a href="connection.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Apply for Connection</a></li>
+<li><a href="about.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> <span id="footer-about-us">About Us</span></a></li>
+<li><a href="meters.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> <span id="footer-shop-meters">Shop Meters</span></a></li>
+<li><a href="services.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> <span id="footer-book-electrician">Book Electrician</span></a></li>
+<li><a href="connection.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> <span id="footer-apply-connection">Apply for Connection</span></a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="text-lg font-bold text-white mb-4">Contact Information</h4>
+<h4 id="footer-contact-information" class="text-lg font-bold text-white mb-4">संपर्क जानकारी</h4>
                 <ul class="space-y-4 text-sm">
                     <li class="flex items-start">
                         <i class="fas fa-map-marker-alt mt-1 mr-3 text-secondary text-lg"></i> 
-                        <span>Opposite Mission Hospital,<br>In front of JUVNL office,<br>Hazaribag, Jharkhand 825301</span>
+<span id="footer-address">Opposite Mission Hospital,<br>In front of JUVNL office,<br>Hazaribag, Jharkhand 825301</span>
                     </li>
                     <li class="flex items-center">
                         <i class="fas fa-envelope mr-3 text-secondary text-lg"></i> 
@@ -277,7 +277,7 @@
             </div>
         </div>
         <div class="border-t border-gray-800 max-w-7xl mx-auto px-4 pt-8 text-center text-sm text-gray-500">
-            <p>&copy; 2026 Bijli Ghar. All rights reserved.</p>
+&copy; 2026 Bijli Ghar. सर्वाधिकार सुरक्षित।
         </div>
     </footer>
 

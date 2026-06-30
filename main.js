@@ -7,6 +7,12 @@ function getCurrentLang() {
 function getLanguageDict(lang = getCurrentLang()) {
     const translations = {
         en: {
+            assistantOnlineStatus: 'Online',
+            assistantChatGreeting: 'Hello! 👋 Welcome to Bijli Ghar. How can I help you today?',
+            assistantQuickBuyMeter: 'Buy a Meter',
+            assistantQuickNewConnection: 'New Connection',
+            assistantQuickBookElectrician: 'Book Electrician',
+            assistantChatPlaceholder: 'Type your message...',
             langLabel: 'Language',
             langOptionEnglish: 'English',
             langOptionHindi: 'Hindi',
@@ -53,6 +59,10 @@ function getLanguageDict(lang = getCurrentLang()) {
             metersCard3SpecPhase: 'Phase',
             metersCard3SpecUse: 'Use Case',
             metersCard3SpecAcc: 'Accuracy',
+            metersCard1SpecValuePlaceholder: 'Value',
+            metersCard2SpecValuePlaceholder: 'Value',
+            metersCard3SpecValuePlaceholder: 'Value',
+
             metersQtyLabel: 'Quantity:',
             metersAddToCart: 'Add to Cart',
             metersInCart: 'currently in cart',
@@ -124,6 +134,9 @@ function getLanguageDict(lang = getCurrentLang()) {
             cartFormPhone: 'Phone Number',
             cartAddressMessage: 'Add a saved address (with optional landmark) from My Account before placing your order.',
             cartTotalToPay: 'Total to Pay',
+            cartMessageSavedAddress: 'Add a saved address (with optional landmark) from My Account before placing your order.',
+            metersCardIndotech1PhaseNoBox: 'Indotech 1-Phase Meter (No Box)',
+
             cartProceedToPay: 'Proceed to Pay',
             loginWelcome: 'Welcome',
             loginAccess: 'Access your Bijli Ghar account.',
@@ -148,6 +161,9 @@ function getLanguageDict(lang = getCurrentLang()) {
             indexBuyMeters: 'Buy Meters',
             indexHireEngineers: 'Hire Engineers',
             indexNewConnection: 'New Connection',
+            indexBuyMetersDesc: 'Purchase certified 1-Phase and 3-Phase smart electric meters with complete housing boxes.',
+            indexHireEngineersDesc: 'Book verified professionals in yellow and white caps equipped with advanced tools for home repairs.',
+            indexNewConnectionDesc: 'Fast-track your new JBVNL electricity connection with our guided online application process.',
             indexDiscoverStory: 'DISCOVER OUR STORY',
             indexPartnerTitle: 'Your Trusted Electrical Partner',
             footerQuickLinks: 'Quick Links',
@@ -190,7 +206,20 @@ function getLanguageDict(lang = getCurrentLang()) {
             accountConnectionHistoryTitle: 'New Connection History'
         },
         hi: {
+            assistantOnlineStatus: 'ऑनलाइन',
+            assistantChatGreeting: 'नमस्ते! 👋 Bijli Ghar में आपका स्वागत है। आज मैं आपकी किस तरह मदद कर सकता/सकती हूँ?',
+            cartMessageSavedAddress: 'आर्डर करने से पहले अपने अकाउंट से सहेजा हुआ पता (वैकल्पिक लैंडमार्क सहित) जोड़ें।',
+            cartTotalToPay: 'भुगतान योग्य कुल',
+            metersCardIndotech1PhaseNoBox: 'इंडोटेक 1-फेज मीटर (No Box)',
+
+
+            assistantQuickBuyMeter: 'मीटर खरीदें',
+
+            assistantQuickNewConnection: 'नया कनेक्शन',
+            assistantQuickBookElectrician: 'इलेक्ट्रिशियन बुक करें',
+            assistantChatPlaceholder: 'अपना संदेश लिखें...',
             langLabel: 'भाषा',
+
             langOptionEnglish: 'अंग्रेज़ी',
             langOptionHindi: 'हिंदी',
             navHome: 'होम',
@@ -288,6 +317,13 @@ function getLanguageDict(lang = getCurrentLang()) {
             connectionDocClickLand: 'भूमि प्रमाण अपलोड करें',
             connectionAgreementTitle: 'उपयोगकर्ता समझौता',
             connectionAgreementCheckbox: 'मैं नियम और शर्तें पढ़ चुका/चुकी हूँ और उनसे सहमत हूँ। *',
+            connectionAgreementLi1Strong: 'कनेक्शन की पुष्टि नहीं होती:',
+            connectionAgreementLi1: 'कनेक्शन केवल तभी प्रदान किया जाएगा जब सभी अपलोड किए गए दस्तावेज़ सही हों और संबंधित प्राधिकारी द्वारा सफलतापूर्वक सत्यापित कर दिए जाएँ।',
+            connectionAgreementLi2Strong: 'शुल्क का विवरण:',
+            connectionAgreementLi2: 'कुल राशि में नए मीटर की लागत, आधिकारिक सुरक्षा जमा (सेक्योरिटी डिपॉज़िट) तथा प्रक्रिया/सेवा शुल्क शामिल हैं।',
+            connectionAgreementLi3Strong: 'रिफंड नीति:',
+            connectionAgreementLi3: 'यदि गलत दस्तावेज़ों या प्लॉट/फ्लैट से संबंधित भौतिक समस्याओं के कारण कनेक्शन पूरा नहीं हो पाता है, तो आपका भुगतान वापस कर दिया जाएगा।',
+            connectionAgreementLi3Em: 'नोट: प्रक्रिया के दौरान उस समय तक उपयोग की गई कोई भी राशि, साथ ही ₹500 की सेवा-शुल्क, आपकी अंतिम रिफंड राशि से काट दी जाएगी।',
             connectionTotalCostLabel: 'कुल अनुमानित लागत',
             connectionProceedPay: 'भुगतान जारी रखें',
             connectionSubmitUpload: 'अपलोड',
@@ -331,6 +367,9 @@ function getLanguageDict(lang = getCurrentLang()) {
             indexBuyMeters: 'मीटर खरीदें',
             indexHireEngineers: 'इंजीनियर नियुक्त करें',
             indexNewConnection: 'नया कनेक्शन',
+            indexBuyMetersDesc: 'प्रमाणित 1-फेज और 3-फेज स्मार्ट इलेक्ट्रिक मीटर खरीदें—पूरे हाउसिंग बॉक्स के साथ।',
+            indexHireEngineersDesc: 'घर की मरम्मत के लिए एडवांस्ड टूल्स से लैस, पीली और सफेद कैप वाले सत्यापित प्रोफेशनल्स बुक करें।',
+            indexNewConnectionDesc: 'हमारी गाइडेड ऑनलाइन आवेदन प्रक्रिया से अपना नया JBVNL बिजली कनेक्शन जल्दी करवाएं।',
             indexDiscoverStory: 'हमारी कहानी जानें',
             indexPartnerTitle: 'आपका भरोसेमंद इलेक्ट्रिकल पार्टनर',
             footerQuickLinks: 'त्वरित लिंक',
@@ -406,7 +445,27 @@ function updateFloatingAssistantUI(dict = getLanguageDict()) {
         const label = email.querySelector('span');
         if (label) label.textContent = dict.assistantEmailSupport;
     }
+
+    // Homepage chatbot widget translation hooks
+    const online = document.getElementById('assistant-online-status');
+    if (online && dict.assistantOnlineStatus) online.textContent = dict.assistantOnlineStatus;
+
+    const chatGreeting = document.querySelector('#chatbot-window .self-start');
+    if (chatGreeting && dict.assistantChatGreeting) chatGreeting.textContent = dict.assistantChatGreeting;
+
+    const quickBuy = document.getElementById('assistant-quick-buy-meter');
+    if (quickBuy && dict.assistantQuickBuyMeter) quickBuy.textContent = dict.assistantQuickBuyMeter;
+
+    const quickConn = document.getElementById('assistant-quick-new-connection');
+    if (quickConn && dict.assistantQuickNewConnection) quickConn.textContent = dict.assistantQuickNewConnection;
+
+    const quickElec = document.getElementById('assistant-quick-book-electrician');
+    if (quickElec && dict.assistantQuickBookElectrician) quickElec.textContent = dict.assistantQuickBookElectrician;
+
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput && dict.assistantChatPlaceholder) chatInput.placeholder = dict.assistantChatPlaceholder;
 }
+
 
 function updateGlobalUI() {
     const lang = getCurrentLang();
@@ -520,6 +579,22 @@ function globalLogout() {
 }
 
 function applyLanguage() {
+    // 0) Translate any element that uses `data-i18n="someKey"` (account page uses this pattern)
+    // This is intentionally generic and safe.
+    const applyDataI18n = () => {
+        const lang = getCurrentLang();
+        const dict = getLanguageDict(lang);
+        const nodes = document.querySelectorAll('[data-i18n]');
+        nodes.forEach(node => {
+            const key = node.getAttribute('data-i18n');
+            if (!key) return;
+            const value = dict[key];
+            if (value === undefined) return;
+            setTranslatedText(node, value);
+        });
+    };
+
+    applyDataI18n();
     const lang = getCurrentLang();
     const dict = getLanguageDict(lang);
     const el = (id) => document.getElementById(id);
@@ -537,8 +612,11 @@ function applyLanguage() {
         'index-apply-connection': dict.indexApplyConnection,
         'index-book-electrician': dict.indexBookElectrician,
         'index-quick-buy-meters': dict.indexBuyMeters,
+        'index-quick-buy-meters-desc': dict.indexBuyMetersDesc,
         'index-quick-hire-engineers': dict.indexHireEngineers,
+        'index-quick-hire-engineers-desc': dict.indexHireEngineersDesc,
         'index-quick-new-connection': dict.indexNewConnection,
+        'index-quick-new-connection-desc': dict.indexNewConnectionDesc,
         'index-discover-story': dict.indexDiscoverStory,
         'index-partner-title': dict.indexPartnerTitle,
         'about-discover-story': dict.aboutDiscoverStory,
@@ -649,7 +727,9 @@ function applyLanguage() {
         'cart-form-landmark': dict.cartFormLandmark,
         'cart-form-phone': dict.cartFormPhone,
         'cart-address-message': dict.cartAddressMessage,
+        'cart-message-saved-address': dict.cartMessageSavedAddress,
         'cart-total-to-pay': dict.cartTotalToPay,
+
         'cart-proceed-to-pay': dict.cartProceedToPay,
         'login-welcome': dict.loginWelcome,
         'login-access': dict.loginAccess,

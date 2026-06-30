@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Account - Bijli Ghar</title>
+<title id="account-page-title">My Account - Bijli Ghar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script>tailwind.config = { theme: { extend: { colors: { primary: '#1e3a8a', secondary: '#f59e0b' } } } }</script>
@@ -51,25 +51,26 @@
     <main class="max-w-4xl mx-auto py-10 px-4 relative z-10">
 
         <div class="bg-white p-8 rounded-2xl shadow-sm border mb-8">
-            <h2 id="welcome-text" class="text-2xl font-bold text-blue-900">Welcome!</h2>
-            <p class="text-gray-500 mt-1">Manage your profile, addresses, and view your bookings below.</p>
+<h2 id="account-welcome-text" class="text-2xl font-bold text-blue-900" data-i18n="accountWelcome">Welcome</h2>
+<p id="account-manage-profile-desc" class="text-gray-500 mt-1" data-i18n="accountManageProfile">Manage your profile, addresses, and view your bookings below.</p>
         </div>
 
         <!-- ACCOUNT INTERNAL NAV + TABS -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border mb-8">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-user-edit mr-3 text-primary"></i> My Account
+<h3 id="account-my-account" class="text-xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-user-edit mr-3 text-primary"></i>
+                        <span data-i18n="accountMyAccount">My Account</span>
                     </h3>
                     <p id="mail-id" class="text-gray-500 text-sm mt-1"></p>
                 </div>
 
                 <div class="flex gap-2 flex-wrap">
-                    <button type="button" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm transition bg-blue-50 text-primary border border-blue-100" data-tab="profile">Profile</button>
-                    <button type="button" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm transition bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" data-tab="serviceHistory">Service History</button>
-                    <button type="button" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm transition bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" data-tab="orderHistory">Order History</button>
-                    <button type="button" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm transition bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" data-tab="connectionHistory">New Connection History</button>
+<button type="button" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm transition bg-blue-50 text-primary border border-blue-100" data-tab="profile" data-i18n="accountProfile">Profile</button>
+                    <button type="button" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm transition bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" data-tab="serviceHistory" data-i18n="accountServiceHistory">Service History</button>
+                    <button type="button" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm transition bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" data-tab="orderHistory" data-i18n="accountOrderHistory">Order History</button>
+                    <button type="button" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm transition bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" data-tab="connectionHistory" data-i18n="accountConnectionHistory">New Connection History</button>
                 </div>
             </div>
         </div>
@@ -78,53 +79,53 @@
         <section id="tab-profile" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border mb-8">
             <div class="flex items-start justify-between gap-6">
                 <div>
-                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-user-edit mr-3 text-primary"></i> Your Profile & Addresses
+<h3 id="account-your-profile" class="text-xl font-bold text-gray-800 flex items-center" data-i18n="accountYourProfileAddresses">
+Your Profile & Addresses
                     </h3>
-                    <p class="text-gray-500 text-sm mt-1">Update your details. You can also keep multiple addresses and select a default.</p>
+<p id="account-update-details" class="text-gray-500 text-sm mt-1" data-i18n="accountUpdateDetails">Update your details. You can also keep multiple addresses and select a default.</p>
                 </div>
-                <button id="saveProfileBtn" class="bg-secondary text-primary px-4 py-2 rounded-lg font-bold hover:bg-yellow-400 transition shadow">
+<button id="saveProfileBtn" class="bg-secondary text-primary px-4 py-2 rounded-lg font-bold hover:bg-yellow-400 transition shadow" data-i18n="accountSaveChanges">
                     <i class="fas fa-save mr-2"></i>Save Changes
                 </button>
             </div>
 
             <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                    <h4 class="font-bold text-gray-800 mb-3 flex items-center"><i class="fas fa-id-card mr-2 text-primary"></i> Personal Info</h4>
+<h4 id="account-personal-info" class="font-bold text-gray-800 mb-3 flex items-center" data-i18n="accountPersonalInfo"><i class="fas fa-id-card mr-2 text-primary"></i> Personal Info</h4>
 
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Name</label>
+<label class="block text-sm font-bold text-gray-700 mb-1" data-i18n="accountName">Name</label>
                             <input id="profileName" type="text" class="w-full bg-white border border-gray-300 text-gray-800 rounded-xl py-3 px-4 shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent"/>
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Phone</label>
+<label class="block text-sm font-bold text-gray-700 mb-1" data-i18n="accountPhone">Phone</label>
                             <input id="profilePhone" type="tel" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="w-full bg-white border border-gray-300 text-gray-800 rounded-xl py-3 px-4 shadow-sm focus:ring-2 focus:ring-primary focus:border-transparent"/>
                         </div>
                     </div>
                 </div>
 
                 <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                    <h4 class="font-bold text-gray-800 mb-3 flex items-center"><i class="fas fa-map-marked-alt mr-2 text-primary"></i> Add New Address</h4>
+<h4 class="font-bold text-gray-800 mb-3 flex items-center" data-i18n="accountAddNewAddress"><i class="fas fa-map-marked-alt mr-2 text-primary"></i> Add New Address</h4>
 
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Label (Home/Office)</label>
+<label class="block text-sm font-bold text-gray-700 mb-1" data-i18n="accountLabel">Label (Home/Office)</label>
                             <input id="newAddrLabel" type="text" placeholder="e.g., Home" class="w-full bg-white border border-gray-300 text-gray-800 rounded-xl py-3 px-4 shadow-sm"/>
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Address</label>
+<label class="block text-sm font-bold text-gray-700 mb-1" data-i18n="accountAddress">Address</label>
                             <textarea id="newAddrText" rows="3" placeholder="Flat, Street, Area, City" class="w-full bg-white border border-gray-300 text-gray-800 rounded-xl py-3 px-4 shadow-sm resize-none"></textarea>
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Landmark (optional)</label>
+<label class="block text-sm font-bold text-gray-700 mb-1" data-i18n="accountLandmark">Landmark (optional)</label>
                             <input id="newAddrLandmark" type="text" placeholder="e.g., Near SBI / Beside Temple" class="w-full bg-white border border-gray-300 text-gray-800 rounded-xl py-3 px-4 shadow-sm"/>
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Phone for this address (optional)</label>
+<label class="block text-sm font-bold text-gray-700 mb-1" data-i18n="accountAddrPhone">Phone for this address (optional)</label>
                             <input id="newAddrPhone" type="tel" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="10 digits" class="w-full bg-white border border-gray-300 text-gray-800 rounded-xl py-3 px-4 shadow-sm"/>
                         </div>
-                        <button id="addAddressBtn" class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-800 transition shadow w-full">
+<button id="addAddressBtn" class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-800 transition shadow w-full" data-i18n="accountAddAddress">
                             <i class="fas fa-plus mr-2"></i>Add Address
                         </button>
                     </div>
@@ -132,30 +133,30 @@
             </div>
 
             <div class="mt-6">
-                <h4 class="font-bold text-gray-800 mb-3 flex items-center"><i class="fas fa-location-dot mr-2 text-primary"></i> Saved Addresses</h4>
+<h4 class="font-bold text-gray-800 mb-3 flex items-center" data-i18n="accountSavedAddresses"><i class="fas fa-location-dot mr-2 text-primary"></i> Saved Addresses</h4>
                 <div id="addressesContainer" class="space-y-4"></div>
 
-                <div id="noAddressesState" class="hidden text-gray-500 text-sm bg-white border border-dashed rounded-xl p-6 text-center">
+<div id="noAddressesState" class="hidden text-gray-500 text-sm bg-white border border-dashed rounded-xl p-6 text-center" data-i18n="accountNoAddresses">
                     No addresses saved yet. Add one using the form above.
                 </div>
             </div>
         </section>
 
         <!-- SERVICE HISTORY TAB -->
-        <section id="tab-serviceHistory" class="hidden">
-            <h3 class="text-xl font-bold mb-4 text-gray-800">Service History</h3>
+<section id="tab-serviceHistory" class="hidden">
+            <h3 class="text-xl font-bold mb-4 text-gray-800" data-i18n="accountServiceHistoryTitle">Service History</h3>
             <div id="service-container" class="space-y-6"></div>
         </section>
 
         <!-- ORDER HISTORY TAB -->
-        <section id="tab-orderHistory" class="hidden">
-            <h3 class="text-xl font-bold mb-4 text-gray-800">Order History</h3>
+<section id="tab-orderHistory" class="hidden">
+            <h3 class="text-xl font-bold mb-4 text-gray-800" data-i18n="accountOrderHistoryTitle">Order History</h3>
             <div id="order-container" class="space-y-6"></div>
         </section>
 
         <!-- NEW CONNECTION HISTORY TAB -->
-        <section id="tab-connectionHistory" class="hidden">
-            <h3 class="text-xl font-bold mb-4 text-gray-800">New Connection History</h3>
+<section id="tab-connectionHistory" class="hidden">
+            <h3 class="text-xl font-bold mb-4 text-gray-800" data-i18n="accountConnectionHistoryTitle">New Connection History</h3>
             <div id="connection-container" class="space-y-6"></div>
         </section>
     </main>
@@ -342,10 +343,13 @@
             const orderHistory = history.filter(h => (h.type || '').includes('Meter'));
             const connectionHistory = history.filter(h => (h.type || '').includes('Connection'));
 
+const dict = (typeof getLanguageDict === 'function') ? getLanguageDict() : null;
+            const emptyService = dict?.servicesCustomLi1 ? 'No service bookings found.' : 'No service bookings found.';
+
             renderHistoryList(
                 serviceHistory,
                 document.getElementById('service-container'),
-                'No service bookings found.'
+                (typeof getLanguageDict === 'function' && getLanguageDict(getCurrentLang()).accountServiceHistoryTitle) ? 'No service bookings found.' : 'No service bookings found.'
             );
 
             renderHistoryList(
@@ -371,7 +375,8 @@
             const mailEl = document.getElementById('mail-id');
             if (mailEl) mailEl.innerText = mailId ? `Mail: ${mailId}` : '';
 
-            document.getElementById('welcome-text').innerText = `Welcome, ${user.name}`;
+const welcomeTitle = document.getElementById('account-welcome-title');
+            if (welcomeTitle) welcomeTitle.innerText = `Welcome, ${user.name}`;
 
             // Ensure profile defaults
             if (!Array.isArray(profile.addresses)) profile.addresses = [];

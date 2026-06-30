@@ -56,16 +56,16 @@
         <div class="max-w-6xl mx-auto px-4">
             
             <div class="text-center mb-10">
-                <h1 class="text-4xl font-extrabold text-white tracking-tight drop-shadow-lg">Secure Checkout</h1>
-                <p class="text-blue-200 mt-2 font-medium">Review your items and enter delivery details.</p>
+                <h1 id="cart-page-title" class="text-4xl font-extrabold text-white tracking-tight drop-shadow-lg">Secure Checkout</h1>
+                <p id="cart-page-desc" class="text-blue-200 mt-2 font-medium">Review your items and enter delivery details.</p>
             </div>
 
             <!-- EMPTY CART STATE (Animated) -->
             <div id="empty-cart-state" class="hidden flex flex-col items-center justify-center bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-16 text-center border border-white/20 mx-auto max-w-2xl">
                 <i class="fas fa-shopping-cart text-7xl text-gray-300 mb-6 animate-bounce-slow"></i>
-                <h2 class="text-3xl font-extrabold text-primary mb-3">Your Cart is Empty</h2>
-                <p class="text-gray-500 mb-8">Looks like you haven't added any meters to your cart yet.</p>
-                <a href="meters.html" class="bg-secondary text-primary font-black px-10 py-4 rounded-xl hover:bg-yellow-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-lg shadow-md">
+                <h2 id="cart-empty-title" class="text-3xl font-extrabold text-primary mb-3">Your Cart is Empty</h2>
+                <p id="cart-empty-desc" class="text-gray-500 mb-8">Looks like you haven't added any meters to your cart yet.</p>
+                <a id="cart-empty-browse" href="meters.html" class="bg-secondary text-primary font-black px-10 py-4 rounded-xl hover:bg-yellow-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-lg shadow-md">
                     <i class="fas fa-store mr-2"></i> Browse Meters
                 </a>
             </div>
@@ -76,10 +76,10 @@
                 <!-- LEFT COLUMN: Cart Items -->
                 <div class="lg:col-span-3 bg-white/95 backdrop-blur-xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] p-6 md:p-8 border border-white/20">
                     <div class="flex justify-between items-center mb-6 border-b border-gray-200 pb-4">
-                        <h3 class="font-bold text-2xl text-primary flex items-center">
+                        <h3 id="cart-order-summary" class="font-bold text-2xl text-primary flex items-center">
                             <i class="fas fa-box-open text-secondary mr-3"></i> Order Summary
                         </h3>
-                        <button onclick="clearCart()" class="text-red-500 hover:text-red-700 text-sm font-bold transition flex items-center">
+                        <button id="cart-empty-cart" onclick="clearCart()" class="text-red-500 hover:text-red-700 text-sm font-bold transition flex items-center">
                             <i class="fas fa-trash-alt mr-1"></i> Empty Cart
                         </button>
                     </div>
@@ -89,8 +89,8 @@
                         <!-- Items render here -->
                     </div>
 
-                    <div class="bg-blue-50/50 rounded-xl p-5 border border-blue-100 flex justify-between items-center">
-                        <span class="text-gray-600 font-bold">Delivery Charge</span>
+                        <div class="bg-blue-50/50 rounded-xl p-5 border border-blue-100 flex justify-between items-center">
+                        <span id="cart-delivery-charge" class="text-gray-600 font-bold">Delivery Charge</span>
                         <span class="text-gray-800 font-bold">₹100</span>
                     </div>
                 </div>
@@ -98,13 +98,13 @@
                 <!-- RIGHT COLUMN: Delivery Details -->
                 <div class="lg:col-span-2">
                     <form id="delivery-form" class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] p-6 md:p-8 border border-white/20 sticky top-24">
-                        <h3 class="font-bold text-2xl text-primary mb-6 border-b border-gray-200 pb-4 flex items-center">
+                        <h3 id="cart-delivery-details" class="font-bold text-2xl text-primary mb-6 border-b border-gray-200 pb-4 flex items-center">
                             <i class="fas fa-shipping-fast text-secondary mr-3"></i> Delivery Details
                         </h3>
 
                         <div class="space-y-5 mb-8">
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
+                                <label id="cart-form-name" class="block text-sm font-bold text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <i class="fas fa-user absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
                                     <input type="text" id="checkout-name" class="w-full bg-gray-50 border border-gray-200 text-gray-800 focus:bg-white focus:ring-2 focus:ring-primary transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm" required>
@@ -112,7 +112,7 @@
                             </div>
                             
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">Flat, House No, Building <span class="text-red-500">*</span></label>
+                                <label id="cart-form-address" class="block text-sm font-bold text-gray-700 mb-1">Flat, House No, Building <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <i class="fas fa-home absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
                                     <input type="text" id="checkout-address" class="w-full bg-gray-50 border border-gray-200 text-gray-800 focus:bg-white focus:ring-2 focus:ring-primary transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm" required>
@@ -120,7 +120,7 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">Landmark</label>
+                                <label id="cart-form-landmark" class="block text-sm font-bold text-gray-700 mb-1">Landmark</label>
                                 <div class="relative group">
                                     <i class="fas fa-map-marker-alt absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
                                     <input type="text" id="checkout-landmark" class="w-full bg-gray-50 border border-gray-200 text-gray-800 focus:bg-white focus:ring-2 focus:ring-primary transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm">
@@ -128,7 +128,7 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
+                                <label id="cart-form-phone" class="block text-sm font-bold text-gray-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
                                 <div class="relative group">
                                     <i class="fas fa-phone-alt absolute left-4 top-3.5 text-gray-400 group-focus-within:text-primary transition"></i>
                                     <input type="tel" id="checkout-phone" class="w-full bg-gray-50 border border-gray-200 text-gray-800 focus:bg-white focus:ring-2 focus:ring-primary transition-all duration-300 rounded-xl py-3 pl-10 pr-4 shadow-sm" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
@@ -139,8 +139,9 @@
                         <!-- Total & Submit -->
                         <div class="border-t border-gray-200 pt-6">
                             <div id="address-block-message" class="hidden mb-4 p-3 rounded-xl border border-red-200 bg-red-50 text-red-700 text-sm font-bold">
-                                Add a saved address (with optional landmark) from <a href="account.html" class="underline text-red-800">My Account</a> before placing your order.
+                                <span data-i18n="cartMessageSavedAddress">Add a saved address (with optional landmark) from <a href="account.html" class="underline text-red-800">My Account</a> before placing your order.</span>
                             </div>
+
                             <div class="flex justify-between items-end mb-6">
                                 <span class="text-sm font-bold text-gray-500 uppercase tracking-wide">Total to Pay</span>
                                 <span class="text-4xl font-black text-primary" id="cart-total">₹0</span>
@@ -164,24 +165,24 @@
                 <p class="text-sm text-gray-400 leading-relaxed pr-4">Your trusted partner for certified electrical equipment, secure installations, and fast JBVNL connections in Hazaribag.</p>
             </div>
             <div>
-                <h4 class="text-lg font-bold text-white mb-4">Quick Links</h4>
+                <h4 id="footer-quick-links" class="text-lg font-bold text-white mb-4">Quick Links</h4>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="about.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> About Us</a></li>
-                    <li><a href="meters.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Shop Meters</a></li>
-                    <li><a href="services.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Book Electrician</a></li>
-                    <li><a href="connection.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Apply for Connection</a></li>
+                    <li><a id="footer-about-us" href="about.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> About Us</a></li>
+                    <li><a id="footer-shop-meters" href="meters.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Shop Meters</a></li>
+                    <li><a id="footer-book-electrician" href="services.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Book Electrician</a></li>
+                    <li><a id="footer-apply-connection" href="connection.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Apply for Connection</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="text-lg font-bold text-white mb-4">Contact Information</h4>
+                <h4 id="footer-contact-information" class="text-lg font-bold text-white mb-4">Contact Information</h4>
                 <ul class="space-y-4 text-sm">
                     <li class="flex items-start">
                         <i class="fas fa-map-marker-alt mt-1 mr-3 text-secondary text-lg"></i> 
-                        <span>Opposite Mission Hospital,<br>In front of JUVNL office,<br>Hazaribag, Jharkhand 825301</span>
+                        <span id="footer-address">Opposite Mission Hospital,<br>In front of JUVNL office,<br>Hazaribag, Jharkhand 825301</span>
                     </li>
                     <li class="flex items-center">
                         <i class="fas fa-envelope mr-3 text-secondary text-lg"></i>
-                        <span>support@bijlighar.com</span>
+                        <span id="footer-email">support@bijlighar.com</span>
                     </li>
                     <li class="flex items-center">
                         <i class="fab fa-whatsapp mr-3 text-secondary text-lg"></i>
@@ -192,7 +193,7 @@
             </div>
         </div>
         <div class="border-t border-gray-800 max-w-7xl mx-auto px-4 pt-8 text-center text-sm text-gray-500">
-            <p>&copy; 2026 Bijli Ghar. All rights reserved.</p>
+            <p id="footer-copyright">&copy; 2026 Bijli Ghar. All rights reserved.</p>
         </div>
     </footer>
 
@@ -260,10 +261,35 @@
                             <img src="${imgPath}" alt="${item.name || 'Meter'}" class="w-16 h-16 object-contain" onerror="this.src='https://via.placeholder.com/150?text=Meter'">
                         </div>
                         <div>
-                            <h4 class="font-bold text-gray-800 text-base leading-tight">${item.name || 'Electric Meter'}</h4>
+                            <h4 class="font-bold text-gray-800 text-base leading-tight">${(function(){
+                                try {
+                                    const lang = (typeof getCurrentLang === 'function') ? getCurrentLang() : (localStorage.getItem('bijliLang') || 'en');
+                                    const name = (item.name || '').toString();
+
+                                    // If Hindi is selected, translate known English product names to Hindi.
+                                    if (lang === 'hi') {
+                                        const dict = {
+                                            'Indotech 1-Phase Meter': 'इंडोटेक 1-फेज मीटर',
+                                            'Indotech Box Meter': 'इंडोटेक बॉक्स मीटर',
+                                            'L&T Three Phase Meter': 'एलएंडटी थ्री फेज मीटर',
+                                            'Indotech 1-Phase Meter (Standard Basic Unit (Without Box))': 'इंडोटेक 1-फेज मीटर',
+                                            'Indotech Box Meter (Complete Set with Protective Housing)': 'इंडोटेक बॉक्स मीटर',
+                                            'L&T Three Phase Meter (Heavy Duty Industrial/Commercial Grade)': 'एलएंडटी थ्री फेज मीटर'
+                                        };
+                                        return dict[name] || item.name || 'Electric Meter';
+                                    }
+
+                                    // Otherwise keep as-is (English).
+                                    return item.name || 'Electric Meter';
+                                } catch(e){
+                                    return item.name || 'Electric Meter';
+                                }
+                            })()}</h4>
+
                             <p class="text-sm text-primary font-bold mt-1">₹${price.toLocaleString('en-IN')}</p>
                         </div>
                     </div>
+
                     
                     <div class="flex flex-col items-end space-y-2">
                         <div class="flex items-center bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
@@ -280,7 +306,7 @@
             container.innerHTML = html;
             const finalTotal = subtotal + 100; // Adding delivery charge
             document.getElementById('cart-total').innerText = `₹${finalTotal.toLocaleString('en-IN')}`;
-            document.getElementById('btn-pay').innerHTML = `<i class="fas fa-lock mr-2"></i> Proceed to Pay (₹${finalTotal.toLocaleString('en-IN')})`;
+            updateCheckoutPayButtonText(finalTotal);
         }
 
         // Action Handlers
@@ -473,6 +499,20 @@
 
             renderCartPage();
         });
+
+        // Language-aware cart button text for dynamic content
+        function updateCheckoutPayButtonText(totalAmount) {
+            try {
+                const lang = (typeof getCurrentLang === 'function') ? getCurrentLang() : (localStorage.getItem('bijliLang') || 'en');
+                const dict = (typeof getLanguageDict === 'function') ? getLanguageDict(lang) : null;
+                const btn = document.getElementById('btn-pay');
+                if (!btn) return;
+                const label = (dict && dict.cartProceedToPay) ? dict.cartProceedToPay : 'Proceed to Pay';
+                btn.innerHTML = `<i class="fas fa-lock mr-2"></i> ${label}${totalAmount ? ' (₹' + totalAmount.toLocaleString('en-IN') + ')' : ''}`;
+            } catch (e) {
+                // Fails silently; keep existing text
+            }
+        }
     </script>
 </body>
 </html>

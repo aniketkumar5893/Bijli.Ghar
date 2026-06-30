@@ -141,7 +141,7 @@
                         <i class="fas fa-tachometer-alt"></i>
                     </div>
                     <h3 id="index-quick-buy-meters" class="text-2xl font-black text-gray-900 mb-3">Buy Meters</h3>
-                    <p class="text-gray-600 font-medium leading-relaxed">Purchase certified 1-Phase and 3-Phase smart electric meters with complete housing boxes.</p>
+                    <p id="index-quick-buy-meters-desc" class="text-gray-600 font-medium leading-relaxed">Purchase certified 1-Phase and 3-Phase smart electric meters with complete housing boxes.</p>
 
                 </a>
                 <a href="services.html" class="group bg-white/95 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-xl hover:shadow-[0_20px_50px_rgba(30,58,138,0.2)] transform hover:-translate-y-2 transition-all duration-300">
@@ -149,7 +149,7 @@
                         <i class="fas fa-hard-hat"></i>
                     </div>
                     <h3 id="index-quick-hire-engineers" class="text-2xl font-black text-gray-900 mb-3">Hire Engineers</h3>
-                    <p class="text-gray-600 font-medium leading-relaxed">Book verified professionals in yellow and white caps equipped with advanced tools for home repairs.</p>
+                    <p id="index-quick-hire-engineers-desc" class="text-gray-600 font-medium leading-relaxed">Book verified professionals in yellow and white caps equipped with advanced tools for home repairs.</p>
 
                 </a>
                 <a href="connection.html" class="group bg-white/95 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-xl hover:shadow-[0_20px_50px_rgba(245,158,11,0.2)] transform hover:-translate-y-2 transition-all duration-300">
@@ -157,7 +157,7 @@
                         <i class="fas fa-file-signature"></i>
                     </div>
                     <h3 id="index-quick-new-connection" class="text-2xl font-black text-gray-900 mb-3">New Connection</h3>
-                    <p class="text-gray-600 font-medium leading-relaxed">Fast-track your new JBVNL electricity connection with our guided online application process.</p>
+                    <p id="index-quick-new-connection-desc" class="text-gray-600 font-medium leading-relaxed">Fast-track your new JBVNL electricity connection with our guided online application process.</p>
 
                 </a>
             </div>
@@ -175,10 +175,11 @@
                 <h4 id="footer-quick-links" class="text-lg font-bold text-white mb-4">Quick Links</h4>
 
                 <ul class="space-y-2 text-sm">
-                    <li><a id="footer-about-us" href="about.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> About Us</a></li>
-                    <li><a id="footer-shop-meters" href="meters.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Shop Meters</a></li>
-                    <li><a id="footer-book-electrician" href="services.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Book Electrician</a></li>
-                    <li><a id="footer-apply-connection" href="connection.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i> Apply for Connection</a></li>
+                    <li><a id="footer-about-us" href="about.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i>About Us</a></li>
+                    <li><a id="footer-shop-meters" href="meters.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i>Shop Meters</a></li>
+                    <li><a id="footer-book-electrician" href="services.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i>Book Electrician</a></li>
+                    <li><a id="footer-apply-connection" href="connection.html" class="hover:text-secondary transition flex items-center"><i class="fas fa-angle-right mr-2 text-primary"></i>Apply for Connection</a></li>
+
                 </ul>
             </div>
             <div>
@@ -216,20 +217,20 @@
                 <div class="flex items-center space-x-3 relative z-10">
                     <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary font-bold shadow-inner"><i class="fas fa-robot text-lg"></i></div>
                     <div>
-                        <h4 class="font-extrabold tracking-wide">Bijli Bot</h4>
-                        <p class="text-xs text-blue-200 flex items-center font-medium"><span class="w-2 h-2 bg-green-400 rounded-full mr-1.5 animate-pulse shadow-[0_0_5px_#4ade80]"></span> Online</p>
+                        <h4 id="assistant-title" class="font-extrabold tracking-wide">Bijli Bot</h4>
+                    <p class="text-xs text-blue-200 flex items-center font-medium"><span class="w-2 h-2 bg-green-400 rounded-full mr-1.5 animate-pulse shadow-[0_0_5px_#4ade80]"></span> <span id="assistant-online-status">Online</span></p>
                     </div>
                 </div>
                 <button onclick="toggleChat()" class="text-gray-300 hover:text-white transition focus:outline-none relative z-10"><i class="fas fa-times text-xl"></i></button>
             </div>
             <div id="chat-messages" class="h-80 overflow-y-auto p-4 bg-gray-50 flex flex-col space-y-4 custom-scrollbar">
-                <div class="self-start bg-white border border-gray-200 text-gray-800 p-3.5 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-sm font-medium">
+                <div id="assistant-chat-greeting" class="self-start bg-white border border-gray-200 text-gray-800 p-3.5 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-sm font-medium">
                     Hello! 👋 Welcome to Bijli Ghar. How can I help you today?
                 </div>
-                <div class="flex flex-wrap gap-2 mt-1" id="quick-replies">
-                    <button onclick="sendUserMsg('Buy a Meter')" class="text-xs font-bold bg-blue-50 text-primary border border-blue-200 px-3 py-1.5 rounded-full hover:bg-primary hover:text-white transition shadow-sm">Buy a Meter</button>
-                    <button onclick="sendUserMsg('New Connection')" class="text-xs font-bold bg-blue-50 text-primary border border-blue-200 px-3 py-1.5 rounded-full hover:bg-primary hover:text-white transition shadow-sm">New Connection</button>
-                    <button onclick="sendUserMsg('Book Electrician')" class="text-xs font-bold bg-blue-50 text-primary border border-blue-200 px-3 py-1.5 rounded-full hover:bg-primary hover:text-white transition shadow-sm">Book Electrician</button>
+                    <div class="flex flex-wrap gap-2 mt-1" id="quick-replies">
+                    <button onclick="sendUserMsg('Buy a Meter')" class="text-xs font-bold bg-blue-50 text-primary border border-blue-200 px-3 py-1.5 rounded-full hover:bg-primary hover:text-white transition shadow-sm"><span id="assistant-quick-buy-meter">Buy a Meter</span></button>
+                    <button onclick="sendUserMsg('New Connection')" class="text-xs font-bold bg-blue-50 text-primary border border-blue-200 px-3 py-1.5 rounded-full hover:bg-primary hover:text-white transition shadow-sm"><span id="assistant-quick-new-connection">New Connection</span></button>
+                    <button onclick="sendUserMsg('Book Electrician')" class="text-xs font-bold bg-blue-50 text-primary border border-blue-200 px-3 py-1.5 rounded-full hover:bg-primary hover:text-white transition shadow-sm"><span id="assistant-quick-book-electrician">Book Electrician</span></button>
                 </div>
             </div>
             <div class="p-3 bg-white border-t border-gray-200">

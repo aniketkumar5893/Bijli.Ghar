@@ -54,6 +54,33 @@ const transporter = nodemailer.createTransport({
 // The destination where you want to RECEIVE the emails
 const ADMIN_EMAIL = 'aniketkumar5893@gmail.com';
 
+if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn('⚠️ [CONFIG WARNING] EMAIL_USER or EMAIL_PASS environment variable is missing. All emails (admin and customer) will fail to send until these are set in Render → Environment.');
+}
+
+// Wraps transporter.sendMail with a couple of retries. This exists specifically
+// because Render's free-tier instance can have a slow/unready outbound network
+// path for the first few seconds right after a cold start (spin-up after
+// inactivity), which causes the *first* SMTP attempt to hit connectionTimeout.
+// A short retry with backoff absorbs that without making the customer wait,
+// since this always runs in the background after the HTTP response is sent.
+async function sendMailWithRetry(mailOptions, { retries = 2, delayMs = 3000 } = {}) {
+    let lastErr;
+    for (let attempt = 1; attempt <= retries + 1; attempt++) {
+        try {
+            return await transporter.sendMail(mailOptions);
+        } catch (err) {
+            lastErr = err;
+            const isLastAttempt = attempt === retries + 1;
+            console.warn(`⚠️ [SEND MAIL ATTEMPT ${attempt}/${retries + 1} FAILED] to ${mailOptions.to}: ${err.message}${isLastAttempt ? '' : ` — retrying in ${delayMs}ms`}`);
+            if (!isLastAttempt) {
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
+        }
+    }
+    throw lastErr;
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -75,7 +102,7 @@ function buildConfirmationEmail({ customerName, category, items, amount, payment
 // Sends the admin notification email for a /save-order request.
 // Any failure here is logged only — it must never affect the customer-facing response.
 async function sendOrderAdminEmail(orderData, dbId) {
-    await transporter.sendMail({
+    await sendMailWithRetry({
         from: process.env.EMAIL_USER,
         to: ADMIN_EMAIL,
         subject: `New ${orderData.category} Received! ⚡`,
@@ -89,7 +116,11 @@ async function sendOrderCustomerEmail(orderData, dbId) {
     const customerEmail = (orderData.email || orderData.customerEmail || orderData.profileEmail || '').toString().trim();
 
     if (!customerEmail) {
-        console.log('ℹ️ Customer email not provided. Skipping order confirmation email.');
+        // cart.html already blocks checkout with an alert when no email is
+        // found on the logged-in user/profile, so this should be rare. If it
+        // happens, it means orderData.email, orderData.customerEmail, and
+        // orderData.profileEmail were all empty/missing in the request body.
+        console.warn('⚠️ [CUSTOMER EMAIL SKIPPED] No email field found on orderData. Order data keys received:', Object.keys(orderData));
         return;
     }
 
@@ -103,7 +134,7 @@ async function sendOrderCustomerEmail(orderData, dbId) {
         customerRef: dbId
     });
 
-    await transporter.sendMail({
+    await sendMailWithRetry({
         from: process.env.EMAIL_USER,
         to: customerEmail,
         subject: email.subject,
@@ -129,7 +160,7 @@ async function sendConnectionAdminEmail(connData, dbId, attachments, totalSizeMB
 
     if (totalSizeMB > 24) {
         console.log('⚠️ Files too large for Gmail. Sending text-only fallback email.');
-        await transporter.sendMail({
+        await sendMailWithRetry({
             from: process.env.EMAIL_USER,
             to: ADMIN_EMAIL,
             subject: '🚨 New Connection (FILES TOO LARGE FOR EMAIL)',
@@ -139,7 +170,7 @@ async function sendConnectionAdminEmail(connData, dbId, attachments, totalSizeMB
     }
 
     try {
-        await transporter.sendMail({
+        await sendMailWithRetry({
             from: process.env.EMAIL_USER,
             to: ADMIN_EMAIL,
             subject: '🚨 New Connection Application + Documents!',
@@ -149,7 +180,7 @@ async function sendConnectionAdminEmail(connData, dbId, attachments, totalSizeMB
     } catch (emailErr) {
         // Fallback: try to at least notify the admin without attachments
         console.error('⚠️ [ADMIN EMAIL WITH ATTACHMENTS FAILED]:', emailErr.message);
-        await transporter.sendMail({
+        await sendMailWithRetry({
             from: process.env.EMAIL_USER,
             to: ADMIN_EMAIL,
             subject: '🚨 New Connection (Attachment Error)',
@@ -160,8 +191,10 @@ async function sendConnectionAdminEmail(connData, dbId, attachments, totalSizeMB
 
 // Sends the customer confirmation email for a /save-connection request (with attachments).
 async function sendConnectionCustomerEmail(connData, dbId, attachments, totalSizeMB) {
-    if (!connData.email) {
-        console.log('ℹ️ Customer email not provided. Skipping connection confirmation email.');
+    const customerEmail = (connData.email || '').toString().trim();
+
+    if (!customerEmail) {
+        console.warn('⚠️ [CUSTOMER EMAIL SKIPPED] No email field found on connData. Connection data keys received:', Object.keys(connData));
         return;
     }
 
@@ -176,16 +209,16 @@ async function sendConnectionCustomerEmail(connData, dbId, attachments, totalSiz
     });
 
     if (totalSizeMB > 24) {
-        await transporter.sendMail({
+        await sendMailWithRetry({
             from: process.env.EMAIL_USER,
-            to: connData.email,
+            to: customerEmail,
             subject: email.subject,
             text: email.text + `\n\nNote: Documents were uploaded successfully. (Attachments not included in this email due to size limits.)`
         });
     } else {
-        await transporter.sendMail({
+        await sendMailWithRetry({
             from: process.env.EMAIL_USER,
-            to: connData.email,
+            to: customerEmail,
             subject: email.subject,
             text: email.text,
             attachments

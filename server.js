@@ -6,8 +6,6 @@ dns.setDefaultResultOrder('ipv4first');
 const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
-const cors = require('cors');
-const nodemailer = require('nodemailer');
 const path = require('path');
 const multer = require('multer');
 const { initializeApp, cert } = require('firebase-admin/app');

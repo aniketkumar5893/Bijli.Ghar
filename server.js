@@ -6,8 +6,19 @@ const multer = require('multer');
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 
-// Initialize Firebase (Strictly Free Plan)
-const serviceAccount = require('./serviceAccountKey.json');
+// ==========================================
+// FIREBASE INITIALIZATION 
+// ==========================================
+let serviceAccount;
+
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  // If running on Render, parse the credentials from the environment variable
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+} else {
+  // If running locally, use the JSON file
+  serviceAccount = require('./serviceAccountKey.json');
+}
+
 initializeApp({
     credential: cert(serviceAccount)
 });
@@ -224,4 +235,3 @@ app.post('/save-connection', upload.any(), async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 SERVER LIVE ON PORT ${PORT} 🚀`));
-

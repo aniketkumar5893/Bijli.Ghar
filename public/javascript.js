@@ -3,7 +3,7 @@
 async function initiatePayment(totalAmount) {
     try {
         // 1. Call your Node.js backend to create an order
-        const response = await fetch('http://localhost:3000/api/create-payment-order', {
+        const response = await fetch('/api/create-payment-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ amount: totalAmount })

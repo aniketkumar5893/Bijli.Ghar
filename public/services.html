@@ -293,7 +293,7 @@
                     btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Saving...`;
                     btn.disabled = true;
 
-                    fetch('[https://bijli-ghar-1.onrender.com](https://bijli-ghar-1.onrender.com)/save-order', { 
+                    fetch('/save-order', { 
                         method: 'POST', 
                         headers: { 'Content-Type': 'application/json' }, 
                         body: JSON.stringify({ 
@@ -354,7 +354,7 @@
             btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...`;
             btn.disabled = true;
 
-                    fetch('[https://bijli-ghar-1.onrender.com](https://bijli-ghar-1.onrender.com)/save-order', { 
+                    fetch('/save-order', { 
                         method: 'POST', 
                         headers: { 'Content-Type': 'application/json' }, 
                         body: JSON.stringify({ 

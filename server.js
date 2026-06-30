@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
+const path = require('path');
 const multer = require('multer');
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
@@ -41,7 +42,8 @@ const ADMIN_EMAIL = 'aniketkumar5893@gmail.com';
 const app = express();
 app.use(cors());
 app.use(express.json());
-
+// Serve the frontend files from the 'public' folder
+app.use(express.static(path.join(__dirname, 'public')));
 function buildConfirmationEmail({ customerName, category, items, amount, paymentId, address, customerRef }) {
     const safeName = customerName || 'Customer';
     return {
@@ -235,3 +237,6 @@ app.post('/save-connection', upload.any(), async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 SERVER LIVE ON PORT ${PORT} 🚀`));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});

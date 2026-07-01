@@ -574,9 +574,16 @@ function injectMobileNav() {
 
     const mobileNavHTML = `
         <div id="mobile-nav" class="md:hidden">
-            <button id="mobile-nav-toggle" aria-label="Open menu" class="fixed top-4 right-4 z-[120] bg-primary text-white w-12 h-12 rounded-lg shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-secondary">
-                <i id="mobile-nav-icon" class="fas fa-bars"></i>
-            </button>
+            <div class="fixed top-4 right-4 z-[120] flex items-center gap-3">
+                <a id="mobile-cart-btn" href="cart.html" aria-label="Cart" class="relative bg-white text-primary w-10 h-10 rounded-lg shadow-md flex items-center justify-center border border-gray-200">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count-badge absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                </a>
+
+                <button id="mobile-nav-toggle" aria-label="Open menu" class="bg-primary text-white w-12 h-12 rounded-lg shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-secondary">
+                    <i id="mobile-nav-icon" class="fas fa-bars"></i>
+                </button>
+            </div>
 
             <div id="mobile-nav-drawer" class="fixed top-0 right-0 h-full w-0 bg-white/95 shadow-2xl overflow-hidden transition-all duration-300 z-[119] border-l border-gray-200">
                 <div class="p-6 pt-10">

@@ -243,6 +243,9 @@
 
     <script src="main.js"></script>
     <script>
+        if (typeof setupPageTransitionLoader === 'function') {
+            setupPageTransitionLoader();
+        }
         // State
         let currentService = ""; 
         let currentPrice = 0;
@@ -284,6 +287,7 @@
             const btn = document.querySelector('#modalForm button[type="submit"]');
             btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Preparing payment...`;
             btn.disabled = true;
+            if (typeof showPageLoader === 'function') showPageLoader();
 
             try {
                 const createResp = await fetch('/api/create-payment-order', {
@@ -324,9 +328,10 @@
                             const verifyJson = await verifyResp.json();
                             if (!verifyJson.success) throw new Error(verifyJson.error || 'Verification failed');
 
-                            const userId = user.uid || user.email || 'guest';
-                            const historyKey = 'bijliHistory_' + userId;
-                            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+                        if (typeof hidePageLoader === 'function') hidePageLoader();
+                        const userId = user.uid || user.email || 'guest';
+                        const historyKey = 'bijliHistory_' + userId;
+                        let history = JSON.parse(localStorage.getItem(historyKey)) || [];
                             history.push({
                                 type: 'Service Booking',
                                 date: new Date().toLocaleDateString(),
@@ -351,8 +356,10 @@
                 };
 
                 new Razorpay(options).open();
+                if (typeof hidePageLoader === 'function') hidePageLoader();
             } catch (err) {
                 console.error(err);
+                if (typeof hidePageLoader === 'function') hidePageLoader();
                 btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Proceed to Pay (₹${currentPrice})`;
                 btn.disabled = false;
                 alert('Could not initiate payment. Please try again later.');

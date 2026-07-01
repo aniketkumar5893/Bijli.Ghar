@@ -207,7 +207,7 @@ app.post('/api/verify-payment', async (req, res) => {
         });
 
         // Fire-and-forget emails
-        try { sendOrderEmailsInBackground(orderData, docRef.id); } catch (e) { console.error(e); }
+        try { sendOrderEmailsInBackground(orderData, docRef.id, razorpay_payment_id, razorpay_order_id); } catch (e) { console.error(e); }
 
         return res.json({ success: true, dbId: docRef.id });
     } catch (err) {
@@ -216,11 +216,11 @@ app.post('/api/verify-payment', async (req, res) => {
     }
 });
 
-function buildConfirmationEmail({ customerName, category, items, amount, paymentId, address, customerRef }) {
+function buildConfirmationEmail({ customerName, category, items, amount, paymentId, orderId, address, customerRef }) {
     const safeName = customerName || 'Customer';
     return {
         subject: `Bijli Ghar: ${category} Confirmation ⚡`,
-        text: `Hi ${safeName},\n\nThanks for booking with Bijli Ghar. We have received your request.\n\nService/Category: ${category}\nItems/Service Details: ${items}\nAmount Paid: ₹${amount}\nRazorpay Payment ID: ${paymentId}\nAddress: ${address}\n\nDatabase Reference: ${customerRef}\n\nWe will contact you shortly.\n\nRegards,\nBijli Ghar Team`
+        text: `Hi ${safeName},\n\nThanks for booking with Bijli Ghar. We have received your request.\n\nService/Category: ${category}\nItems/Service Details: ${items}\nAmount Paid: ₹${amount}\nRazorpay Order ID: ${orderId || 'N/A'}\nRazorpay Payment ID: ${paymentId || 'N/A'}\nAddress: ${address}\n\nDatabase Reference: ${customerRef}\n\nWe will contact you shortly.\n\nRegards,\nBijli Ghar Team`
     };
 }
 
@@ -230,25 +230,22 @@ function buildConfirmationEmail({ customerName, category, items, amount, payment
 
 // Sends the admin notification email for a /save-order request.
 // Any failure here is logged only — it must never affect the customer-facing response.
-async function sendOrderAdminEmail(orderData, dbId) {
+async function sendOrderAdminEmail(orderData, dbId, paymentId, orderId) {
+    const customerEmail = (orderData.email || orderData.customerEmail || orderData.profileEmail || '').toString().trim() || 'N/A';
     await sendMailWithRetry({
         from: process.env.EMAIL_USER,
         to: ADMIN_EMAIL,
-        subject: `New ${orderData.category} Received! ⚡`,
-        text: `You have received a new ${orderData.category}. Here is the complete data saved to your database:\n\nCategory: ${orderData.category}\nName: ${orderData.name}\nPhone: ${orderData.phone}\nAddress: ${orderData.address}\nItems/Service Details: ${orderData.items}\nAmount Paid: ₹${orderData.amount}\nRazorpay Payment ID: ${orderData.paymentId}\nDatabase Reference: ${dbId}`
+        subject: `New ${orderData.category || 'Order'} Received! ⚡`,
+        text: `You have received a new ${orderData.category || 'order'}. Here is the complete data saved to your database:\n\nCategory: ${orderData.category || 'N/A'}\nName: ${orderData.name || 'N/A'}\nPhone: ${orderData.phone || 'N/A'}\nEmail: ${customerEmail}\nAddress: ${orderData.address || 'N/A'}\nItems/Service Details: ${orderData.items || 'N/A'}\nAmount Paid: ₹${orderData.amount || 0}\nRazorpay Order ID: ${orderId || orderData.orderId || 'N/A'}\nRazorpay Payment ID: ${paymentId || orderData.paymentId || 'N/A'}\nDatabase Reference: ${dbId}`
     });
 }
 
 // Sends the customer confirmation email for a /save-order request.
 // Any failure here is logged only — it must never affect the customer-facing response.
-async function sendOrderCustomerEmail(orderData, dbId) {
+async function sendOrderCustomerEmail(orderData, dbId, paymentId, orderId) {
     const customerEmail = (orderData.email || orderData.customerEmail || orderData.profileEmail || '').toString().trim();
 
     if (!customerEmail) {
-        // cart.html already blocks checkout with an alert when no email is
-        // found on the logged-in user/profile, so this should be rare. If it
-        // happens, it means orderData.email, orderData.customerEmail, and
-        // orderData.profileEmail were all empty/missing in the request body.
         console.warn('⚠️ [CUSTOMER EMAIL SKIPPED] No email field found on orderData. Order data keys received:', Object.keys(orderData));
         return;
     }
@@ -258,7 +255,8 @@ async function sendOrderCustomerEmail(orderData, dbId) {
         category: orderData.category,
         items: orderData.items,
         amount: orderData.amount,
-        paymentId: orderData.paymentId,
+        paymentId: paymentId || orderData.paymentId,
+        orderId: orderId || orderData.orderId,
         address: orderData.address,
         customerRef: dbId
     });
@@ -273,12 +271,12 @@ async function sendOrderCustomerEmail(orderData, dbId) {
 
 // Fires both order emails in the background. Never throws — every failure is caught
 // and logged individually so one failing email doesn't stop the other from being tried.
-function sendOrderEmailsInBackground(orderData, dbId) {
-    sendOrderAdminEmail(orderData, dbId)
+function sendOrderEmailsInBackground(orderData, dbId, paymentId, orderId) {
+    sendOrderAdminEmail(orderData, dbId, paymentId, orderId)
         .then(() => console.log(`✅ [ADMIN EMAIL SUCCESS] Order ${dbId}`))
         .catch(err => console.error(`⚠️ [ADMIN EMAIL FAILED] Order ${dbId}:`, err.message));
 
-    sendOrderCustomerEmail(orderData, dbId)
+    sendOrderCustomerEmail(orderData, dbId, paymentId, orderId)
         .then(() => console.log(`✅ [CUSTOMER EMAIL SUCCESS] Order ${dbId}`))
         .catch(err => console.error(`⚠️ [CUSTOMER EMAIL FAILED] Order ${dbId}:`, err.message));
 }

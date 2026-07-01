@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="ga" x1="0" x2="1">
+      <stop offset="0" stop-color="#071428" />
+      <stop offset="1" stop-color="#0c3a4a" />
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#ga)"/>
+  <g fill="#fff" opacity="0.06">
+    <circle cx="160" cy="160" r="80"/>
+    <rect x="360" y="260" width="420" height="200" rx="12"/>
+  </g>
+</svg>

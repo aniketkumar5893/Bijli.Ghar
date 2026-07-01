@@ -19,8 +19,6 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
     
-    <div class="absolute inset-0 bg-blue-900/85 z-0 pointer-events-none"></div>
-
     <!-- UNIVERSAL NAVIGATION BAR -->
     <nav class="bg-primary/95 backdrop-blur-md text-white shadow-xl sticky top-0 z-50 border-b border-blue-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
@@ -381,76 +379,93 @@
             const totalAmount = subtotal + 100;
             const itemDesc = itemDescArray.join(', ');
 
-            var options = {
-                "key": "rzp_test_T69VfOhy38d2hR",
-                "amount": totalAmount * 100, 
-                "currency": "INR",
-                "name": "Bijli Ghar",
-                "description": "Meter Purchase",
-                "handler": function (response) {
-                    
-                    const btn = document.getElementById('btn-pay');
-                    btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Processing Order...`;
-                    btn.disabled = true;
+            // 1) Create Razorpay order on server
+            try {
+                const createResp = await fetch('/api/create-payment-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: totalAmount })
+                });
+                const order = await createResp.json();
+                if (!order || !order.id) throw new Error('Could not create order');
 
-                    // Email is mandatory for sending confirmation email.
-                    const customerEmail = (user?.email || profile?.email || '').toString().trim();
-                    if (!customerEmail) {
-                        btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Proceed to Pay`;
-                        btn.disabled = false;
-                        alert('Email is missing in your account. Please update/add your email in My Account/Login to receive order confirmation.');
-                        return;
+                const options = {
+                    key: order.key || '',
+                    amount: order.amount || totalAmount * 100,
+                    currency: order.currency || 'INR',
+                    name: 'Bijli Ghar',
+                    description: 'Meter Purchase',
+                    order_id: order.id,
+                    handler: async function (response) {
+                        const btn = document.getElementById('btn-pay');
+                        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Processing Order...`;
+                        btn.disabled = true;
+
+                        const customerEmail = (user?.email || profile?.email || '').toString().trim();
+                        if (!customerEmail) {
+                            btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Proceed to Pay`;
+                            btn.disabled = false;
+                            alert('Email is missing in your account. Please update/add your email in My Account/Login to receive order confirmation.');
+                            return;
+                        }
+
+                        // Verify payment server-side and save order
+                        try {
+                            const verifyResp = await fetch('/api/verify-payment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    orderData: {
+                                        category: 'Meter Order',
+                                        name: document.getElementById('checkout-name').value,
+                                        phone: document.getElementById('checkout-phone').value,
+                                        address: document.getElementById('checkout-address').value + ', ' + document.getElementById('checkout-landmark').value,
+                                        amount: totalAmount,
+                                        items: itemDesc,
+                                        email: customerEmail
+                                    }
+                                })
+                            });
+                            const verifyJson = await verifyResp.json();
+                            if (!verifyJson.success) throw new Error(verifyJson.error || 'Verification failed');
+
+                            // Save to local history
+                            const userId = user.uid || user.email || 'guest';
+                            const historyKey = 'bijliHistory_' + userId;
+                            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+                            history.push({ 
+                                type: 'Meter Order', 
+                                date: new Date().toLocaleDateString(), 
+                                amount: totalAmount, 
+                                items: itemDesc, 
+                                status: 'Order Placed', 
+                                id: response.razorpay_payment_id,
+                                customerPhone: document.getElementById('checkout-phone').value,
+                                customerAddress: document.getElementById('checkout-address').value + ', ' + document.getElementById('checkout-landmark').value
+                            });
+                            localStorage.setItem(historyKey, JSON.stringify(history));
+
+                            localStorage.removeItem('bijliCart'); // Clear Cart
+                            alert('Payment Successful! Order placed.');
+                            window.location.assign('account.html');
+                        } catch (err) {
+                            console.error(err);
+                            alert('⚠️ Error verifying/saving order. Please contact support.');
+                            btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Proceed to Pay`;
+                            btn.disabled = false;
+                        }
                     }
+                };
 
-                    // Send data to backend
-                    fetch('/save-order', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            category: 'Meter Order',
-                            name: document.getElementById('checkout-name').value,
-                            phone: document.getElementById('checkout-phone').value,
-                            address: document.getElementById('checkout-address').value + ", " + document.getElementById('checkout-landmark').value,
-                            amount: totalAmount,
-                            items: itemDesc,
-                            email: customerEmail,
-                            profileEmail: profile?.email || '',
-                            paymentId: response.razorpay_payment_id
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (!data.success) throw new Error(data.error);
-
-                        // Save securely to account history
-                        const userId = user.uid || user.email || 'guest';
-                        const historyKey = 'bijliHistory_' + userId;
-                        let history = JSON.parse(localStorage.getItem(historyKey)) || [];
-                        history.push({ 
-                            type: 'Meter Order', 
-                            date: new Date().toLocaleDateString(), 
-                            amount: totalAmount, 
-                            items: itemDesc, 
-                            status: 'Order Placed', 
-                            id: response.razorpay_payment_id,
-                            customerPhone: document.getElementById('checkout-phone').value,
-                            customerAddress: document.getElementById('checkout-address').value + ", " + document.getElementById('checkout-landmark').value
-                        });
-                        localStorage.setItem(historyKey, JSON.stringify(history));
-
-                        localStorage.removeItem('bijliCart'); // Clear Cart
-                        alert("Payment Successful! Order placed.");
-                        window.location.assign('account.html');
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert("⚠️ Error saving order to database.");
-                        btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Proceed to Pay`;
-                        btn.disabled = false;
-                    });
-                }
-            };
-            new Razorpay(options).open();
+                const rzp = new Razorpay(options);
+                rzp.open();
+            } catch (err) {
+                console.error('Payment initialization error:', err);
+                alert('Could not initiate payment. Please try again later.');
+            }
         });
 
         // Initialize page

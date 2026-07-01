@@ -11,23 +11,35 @@ async function initiatePayment(totalAmount) {
         
         const order = await response.json();
 
-        // 2. Open Razorpay Checkout
+        // 2. Open Razorpay Checkout using server-provided key and order
         const options = {
-            key: "YOUR_PUBLIC_RAZORPAY_KEY", // Add your public key here
+            key: order.key || '',
             amount: order.amount,
-            currency: "INR",
-            name: "Bijli Ghar",
-            description: "JBVNL New Connection Service",
+            currency: order.currency || 'INR',
+            name: 'Bijli Ghar',
+            description: 'JBVNL New Connection Service',
             order_id: order.id,
             handler: function (response) {
-                alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
-                // Here you would typically redirect to a success page
+                // Notify the server to verify signature and finalize order
+                fetch('/api/verify-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                        orderData: { amount: order.amount }
+                    })
+                }).then(r => r.json()).then(result => {
+                    if (result.success) alert('Payment verified successfully');
+                    else alert('Payment verification failed');
+                }).catch(err => { console.error(err); alert('Verification error'); });
             },
             prefill: {
-                name: "Customer Name",
-                contact: "9999999999"
+                name: 'Customer Name',
+                contact: '9999999999'
             },
-            theme: { color: "#1e3a8a" } // Matches your primary brand color
+            theme: { color: '#1e3a8a' }
         };
 
         const rzp = new Razorpay(options);

@@ -30,6 +30,8 @@ initializeApp({
 
 const db = getFirestore();
 const upload = multer({ storage: multer.memoryStorage() });
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
 
 // The account used to SEND the emails
 // IMPORTANT: connection/greeting/socket timeouts are set so that a slow or
@@ -83,9 +85,103 @@ async function sendMailWithRetry(mailOptions, { retries = 2, delayMs = 3000 } = 
 
 const app = express();
 app.use(cors());
+// Keep JSON parser for normal routes
 app.use(express.json());
 // Serve the frontend files from the 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Razorpay client
+const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID || '',
+    key_secret: process.env.RAZORPAY_KEY_SECRET || ''
+});
+
+// Create Razorpay order endpoint
+app.post('/api/create-payment-order', async (req, res) => {
+    try {
+        const { amount } = req.body;
+        if (!amount || !Number.isFinite(Number(amount))) return res.status(400).json({ error: 'Invalid amount' });
+
+        const options = {
+            amount: Math.round(Number(amount) * 100), // in paise
+            currency: 'INR',
+            receipt: `rcpt_${Date.now()}`,
+            payment_capture: 1
+        };
+
+        const order = await razorpay.orders.create(options);
+        return res.json({ id: order.id, amount: order.amount, currency: order.currency, key: process.env.RAZORPAY_KEY_ID || '' });
+    } catch (err) {
+        console.error('Error creating Razorpay order:', err.message);
+        return res.status(500).json({ error: 'Could not create order' });
+    }
+});
+
+// Verify payment from client (handler) and save order to Firestore
+app.post('/api/verify-payment', async (req, res) => {
+    try {
+        const { razorpay_payment_id, razorpay_order_id, razorpay_signature, orderData } = req.body;
+        if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) return res.status(400).json({ error: 'Missing payment verification fields' });
+
+        const secret = process.env.RAZORPAY_KEY_SECRET || '';
+        const generated_signature = crypto.createHmac('sha256', secret).update(`${razorpay_order_id}|${razorpay_payment_id}`).digest('hex');
+
+        if (generated_signature !== razorpay_signature) {
+            console.warn('⚠️ Razorpay signature mismatch');
+            return res.status(400).json({ error: 'Invalid signature' });
+        }
+
+        // Save order to Firestore
+        const docRef = await db.collection('orders').add({
+            category: orderData.category || 'Unknown',
+            name: orderData.name || '',
+            phone: orderData.phone || '',
+            address: orderData.address || '',
+            items: orderData.items || '',
+            amount: orderData.amount || 0,
+            paymentId: razorpay_payment_id,
+            orderId: razorpay_order_id,
+            status: 'Paid',
+            createdAt: new Date()
+        });
+
+        // Fire-and-forget emails
+        try { sendOrderEmailsInBackground(orderData, docRef.id); } catch (e) { console.error(e); }
+
+        return res.json({ success: true, dbId: docRef.id });
+    } catch (err) {
+        console.error('Error verifying payment:', err.message);
+        return res.status(500).json({ error: 'Verification failed' });
+    }
+});
+
+// Razorpay webhook endpoint (use raw body parser)
+app.post('/api/razorpay-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET || '';
+    const signature = req.headers['x-razorpay-signature'];
+    const body = req.body;
+
+    const expected = crypto.createHmac('sha256', webhookSecret).update(body).digest('hex');
+    if (expected !== signature) {
+        console.warn('⚠️ Invalid webhook signature');
+        return res.status(400).send('invalid signature');
+    }
+
+    try {
+        const payload = JSON.parse(body.toString());
+        console.log('Webhook received:', payload.event);
+        // Example: handle payment.captured events
+        if (payload.event === 'payment.captured') {
+            const payment = payload.payload.payment.entity;
+            // Optionally update Firestore if you linked order/payment metadata
+            // This is left as an application-specific step
+        }
+        res.status(200).send('ok');
+    } catch (e) {
+        console.error('Webhook processing error:', e.message);
+        res.status(500).send('error');
+    }
+});
 
 function buildConfirmationEmail({ customerName, category, items, amount, paymentId, address, customerRef }) {
     const safeName = customerName || 'Customer';

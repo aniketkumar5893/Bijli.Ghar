@@ -544,6 +544,171 @@ function injectFloatingAssistant() {
     document.body.insertAdjacentHTML('beforeend', assistantHTML);
 }
 
+// -----------------------------------------------------
+// MOBILE NAV (Hamburger + Right-side Drawer)
+// Injects a hamburger button visible on small screens and a
+// right-side navigation drawer with site links. Uses Tailwind classes.
+// -----------------------------------------------------
+function injectMobileNav() {
+    if (document.getElementById('mobile-nav')) return; // already injected
+    let trapHandler = null;
+
+    const mobileNavHTML = `
+        <div id="mobile-nav" class="md:hidden">
+            <button id="mobile-nav-toggle" aria-label="Open menu" class="fixed top-4 right-4 z-[120] bg-primary text-white w-12 h-12 rounded-lg shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-secondary">
+                <i id="mobile-nav-icon" class="fas fa-bars"></i>
+            </button>
+
+            <div id="mobile-nav-drawer" class="fixed top-0 right-0 h-full w-0 bg-white/95 shadow-2xl overflow-hidden transition-all duration-300 z-[119] border-l border-gray-200">
+                <div class="p-6 pt-10">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 id="mobile-nav-title" class="text-xl font-bold text-primary">Menu</h3>
+                        <button id="mobile-nav-close" aria-label="Close menu" class="text-gray-600 hover:text-red-500 focus:outline-none"><i class="fas fa-times"></i></button>
+                    </div>
+                    <nav class="space-y-4 text-lg" role="navigation" aria-label="Mobile Navigation">
+                        <a id="mobile-link-home" href="index.html" class="block font-semibold text-gray-800 hover:text-primary">Home</a>
+                        <a id="mobile-link-meters" href="meters.html" class="block font-semibold text-gray-800 hover:text-primary">Meters</a>
+                        <a id="mobile-link-services" href="services.html" class="block font-semibold text-gray-800 hover:text-primary">Services</a>
+                        <a id="mobile-link-connection" href="connection.html" class="block font-semibold text-gray-800 hover:text-primary">New Connection</a>
+                        <a id="mobile-link-account" href="account.html" class="block font-semibold text-gray-800 hover:text-primary">Account</a>
+                        <a id="mobile-link-about" href="about.html" class="block font-semibold text-gray-800 hover:text-primary">About</a>
+                    </nav>
+                </div>
+            </div>
+            <div id="mobile-nav-backdrop" class="hidden fixed inset-0 bg-black/40 z-[118] transition-opacity"></div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', mobileNavHTML);
+
+    const toggleBtn = document.getElementById('mobile-nav-toggle');
+    const closeBtn = document.getElementById('mobile-nav-close');
+    const drawer = document.getElementById('mobile-nav-drawer');
+    const backdrop = document.getElementById('mobile-nav-backdrop');
+
+    function openDrawer() {
+        drawer.style.width = '85%';
+        backdrop.classList.remove('hidden');
+        backdrop.classList.add('block');
+        setTimeout(() => backdrop.style.opacity = '1', 20);
+        document.getElementById('mobile-nav-icon').classList.remove('fa-bars');
+        document.getElementById('mobile-nav-icon').classList.add('fa-times');
+        // focus first link
+        const focusables = drawer.querySelectorAll('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        const firstLink = focusables[0];
+        if (firstLink) firstLink.focus();
+        // trap focus inside drawer
+        trapHandler = function(e) {
+            if (e.key !== 'Tab') return;
+            const focusable = Array.from(focusables).filter(n => !n.disabled && n.offsetParent !== null);
+            if (focusable.length === 0) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey) {
+                if (document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                }
+            } else {
+                if (document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        };
+        document.addEventListener('keydown', trapHandler);
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+        drawer.style.width = '0';
+        backdrop.style.opacity = '0';
+        setTimeout(() => { backdrop.classList.add('hidden'); backdrop.classList.remove('block'); }, 250);
+        document.getElementById('mobile-nav-icon').classList.remove('fa-times');
+        document.getElementById('mobile-nav-icon').classList.add('fa-bars');
+        document.body.style.overflow = '';
+        // remove focus trap
+        try { document.removeEventListener('keydown', trapHandler); } catch (e) {}
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        const w = drawer.style.width;
+        if (!w || w === '0px' || w === '0') openDrawer(); else closeDrawer();
+    });
+
+    closeBtn.addEventListener('click', closeDrawer);
+    backdrop.addEventListener('click', closeDrawer);
+
+    // Close on ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDrawer();
+    });
+}
+
+// -----------------------------------------------------
+// SITE BACKGROUND (Responsive)
+// Inserts a full-viewport responsive <picture> as the background
+// so every page gets a consistent scenic backdrop that scales
+// appropriately for mobile, tablet, and desktop.
+// -----------------------------------------------------
+function injectSiteBackground() {
+    if (document.getElementById('site-bg')) return;
+
+    // Base asset name (no extension) -> we'll prefer WebP, then JPG, then SVG
+    const path = window.location.pathname || '';
+    let base = 'assets/bg-default';
+    if (path.includes('meters.html')) base = 'assets/bg-meters';
+    else if (path.includes('services.html')) base = 'assets/bg-services';
+    else if (path.includes('connection.html')) base = 'assets/bg-connection';
+    else if (path.includes('cart.html') || path.includes('checkout')) base = 'assets/bg-cart';
+    else if (path.includes('login.html') || path.includes('account.html')) base = 'assets/bg-account';
+
+    const smallWebp = `${base}.webp`;
+    const smallJpg = `${base}.jpg`;
+    const smallSvg = `${base}.svg`;
+    const mediumWebp = `${base}.webp`;
+    const mediumJpg = `${base}.jpg`;
+    const mediumSvg = `${base}.svg`;
+    const largeWebp = `${base}.webp`;
+    const largeJpg = `${base}.jpg`;
+    const largeSvg = `${base}.svg`;
+
+    const pic = document.createElement('div');
+    pic.id = 'site-bg';
+    pic.innerHTML = `
+        <picture aria-hidden="true">
+            <source type="image/webp" media="(max-width:640px)" srcset="${smallWebp}">
+            <source media="(max-width:640px)" srcset="${smallJpg}">
+            <source type="image/webp" media="(max-width:1024px)" srcset="${mediumWebp}">
+            <source media="(max-width:1024px)" srcset="${mediumJpg}">
+            <source type="image/webp" srcset="${largeWebp}">
+            <img id="site-bg-img" src="${largeJpg}" alt="" />
+        </picture>
+    `;
+
+    // Base styles
+    const css = `
+        #site-bg { position: fixed; inset: 0; z-index: -999; pointer-events: none; }
+        #site-bg picture, #site-bg img { width: 100%; height: 100%; display: block; }
+        #site-bg img { object-fit: cover; object-position: center; width:100%; height:100%; filter: brightness(0.45) saturate(0.95) contrast(0.95); transition: transform 0.6s ease; }
+        /* Slight parallax on larger screens */
+        @media (min-width: 1024px) {
+            #site-bg img { transform: scale(1.05); }
+        }
+        /* Darker background for small screens for contrast */
+        @media (max-width: 640px) {
+            #site-bg img { filter: brightness(0.35) saturate(0.85) contrast(0.9); }
+        }
+    `;
+
+    const style = document.createElement('style');
+    style.setAttribute('data-generated', 'site-bg');
+    style.appendChild(document.createTextNode(css));
+
+    // Insert style and picture at top of body so it's behind everything
+    document.head.appendChild(style);
+    document.body.insertBefore(pic, document.body.firstChild);
+}
 // Function to open/close the assistant menu
 window.toggleAssistant = function() {
     const menu = document.getElementById('assistant-menu');
@@ -825,4 +990,20 @@ function initLanguageSelector() {
 document.addEventListener('DOMContentLoaded', () => {
     updateGlobalUI();
     initLanguageSelector();
+    // Inject mobile nav for small screens
+    try { injectMobileNav(); } catch (e) { /* ignore if fails */ }
+    // Ensure mobile menu labels are updated for selected language
+    try {
+        const dict = getLanguageDict();
+        const setIf = (id, val) => { const n = document.getElementById(id); if (n) n.textContent = val; };
+        setIf('mobile-link-home', dict.navHome || 'Home');
+        setIf('mobile-link-meters', dict.navMeters || 'Meters');
+        setIf('mobile-link-services', dict.navServices || 'Services');
+        setIf('mobile-link-connection', dict.navConnection || 'New Connection');
+        setIf('mobile-link-account', dict.navMyAccount || 'Account');
+        setIf('mobile-link-about', dict.navAbout || 'About');
+        setIf('mobile-nav-title', (dict.langOptionEnglish ? 'Menu' : 'Menu'));
+    } catch(e) {}
+    // Inject site background for all pages
+    try { injectSiteBackground(); } catch (e) { /* ignore */ }
 });

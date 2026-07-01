@@ -435,56 +435,102 @@
             }
 
             const cleanTotal = parseInt(document.getElementById('totalPrice').innerText.replace(/[^0-9]/g, ''));
-            var options = {
-                "key": "rzp_test_T69VfOhy38d2hR", "amount": cleanTotal * 100, "currency": "INR", "name": "Bijli Ghar",
-                "handler": async function (response) {
-                    const paymentId = response.razorpay_payment_id;
-                    
-                    const floors = document.getElementById('floors').value;
-                    const acTons = document.getElementById('acTons').value;
-                    const loadStr = document.getElementById('loadReq').value + " kWh, " + document.getElementById('phaseType').value + " Phase (" + document.getElementById('connType').value + ") [Floors: " + floors + ", AC: " + acTons + " Ton]";
+            const customerEmail = (user.email || '').toString().trim();
+            if (!customerEmail) {
+                alert('Please add an email to your account before applying for a new connection. This is required for confirmation.');
+                return;
+            }
 
-                    const formData = new FormData();
-                    formData.append('name', document.getElementById('connName').value);
-                    formData.append('phone', document.getElementById('connPhone').value);
-                    formData.append('email', user.email || '');
-                    formData.append('address', document.getElementById('connAddress').value + ", " + document.getElementById('connLandmark').value);
-                    formData.append('amount', cleanTotal); 
-                    formData.append('items', loadStr);
-                    formData.append('paymentId', paymentId);
+            const floors = document.getElementById('floors').value;
+            const acTons = document.getElementById('acTons').value;
+            const loadStr = document.getElementById('loadReq').value + ' kWh, ' + document.getElementById('phaseType').value + ' Phase (' + document.getElementById('connType').value + ') [Floors: ' + floors + ', AC: ' + acTons + ' Ton]';
+            const address = document.getElementById('connAddress').value + ', ' + document.getElementById('connLandmark').value;
+            const btn = document.querySelector('button[type="submit"]');
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Preparing payment...`;
+            btn.disabled = true;
 
-                    
-                    fileState.photo.forEach((f, i) => formData.append('photo_' + i, f, f.name));
-                    fileState.idProof.forEach((f, i) => formData.append('idProof_' + i, f, f.name));
-                    fileState.signature.forEach((f, i) => formData.append('signature_' + i, f, f.name));
-                    fileState.landProof.forEach((f, i) => formData.append('landProof_' + i, f, f.name));
+            try {
+                const createResp = await fetch('/api/create-payment-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: cleanTotal })
+                });
+                const order = await createResp.json();
+                if (!order || !order.id) throw new Error(order.error || 'Could not create payment order');
 
-                    const btn = document.querySelector('button[type="submit"]');
-                    btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Uploading to Database...`;
-                    btn.disabled = true;
+                const options = {
+                    key: order.key || '',
+                    amount: order.amount,
+                    currency: order.currency || 'INR',
+                    name: 'Bijli Ghar',
+                    description: 'New Connection Application',
+                    order_id: order.id,
+                    handler: async function (response) {
+                        try {
+                            const verifyResp = await fetch('/api/verify-payment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    orderData: {
+                                        category: 'New Connection',
+                                        name: document.getElementById('connName').value,
+                                        phone: document.getElementById('connPhone').value,
+                                        email: customerEmail,
+                                        amount: cleanTotal,
+                                        items: loadStr,
+                                        address: address
+                                    }
+                                })
+                            });
+                            const verifyJson = await verifyResp.json();
+                            if (!verifyJson.success) throw new Error(verifyJson.error || 'Payment verification failed');
 
-                    try {
-                        const res = await fetch('/save-connection', { method: 'POST', body: formData });
-                        const data = await res.json();
-                        if (!data.success) throw new Error(data.error);
+                            const formData = new FormData();
+                            formData.append('name', document.getElementById('connName').value);
+                            formData.append('phone', document.getElementById('connPhone').value);
+                            formData.append('email', customerEmail);
+                            formData.append('address', address);
+                            formData.append('amount', cleanTotal);
+                            formData.append('items', loadStr);
+                            formData.append('paymentId', response.razorpay_payment_id);
 
-                        const userId = user.uid || user.email || 'guest';
-                        const historyKey = 'bijliHistory_' + userId;
-                        let history = JSON.parse(localStorage.getItem(historyKey)) || [];
-                        history.push({ type: 'New Connection', date: new Date().toLocaleDateString(), amount: cleanTotal, items: loadStr, status: 'Documents Uploaded', id: paymentId });
-                        localStorage.setItem(historyKey, JSON.stringify(history));
+                            fileState.photo.forEach((f, i) => formData.append('photo_' + i, f, f.name));
+                            fileState.idProof.forEach((f, i) => formData.append('idProof_' + i, f, f.name));
+                            fileState.signature.forEach((f, i) => formData.append('signature_' + i, f, f.name));
+                            fileState.landProof.forEach((f, i) => formData.append('landProof_' + i, f, f.name));
 
-                        alert("Application and Documents securely saved to Database!"); 
-                        window.location.assign('account.html');
-                    } catch (err) { 
-                        console.error(err);
-                        alert("⚠️ Error: Could not reach the database."); 
-                        btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Pay via Razorpay`;
-                        btn.disabled = false;
+                            const res = await fetch('/save-connection', { method: 'POST', body: formData });
+                            const data = await res.json();
+                            if (!data.success) throw new Error(data.error);
+
+                            const userId = user.uid || user.email || 'guest';
+                            const historyKey = 'bijliHistory_' + userId;
+                            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+                            history.push({ type: 'New Connection', date: new Date().toLocaleDateString(), amount: cleanTotal, items: loadStr, status: 'Documents Uploaded', id: response.razorpay_payment_id });
+                            localStorage.setItem(historyKey, JSON.stringify(history));
+
+                            alert('Application, payment, and documents securely saved!');
+                            window.location.assign('account.html');
+                        } catch (err) {
+                            console.error(err);
+                            alert('⚠️ Error saving the connection application. Please contact support.');
+                            btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Pay via Razorpay`;
+                            btn.disabled = false;
+                        }
                     }
-                }
-            };
-            new Razorpay(options).open();
+                };
+
+                new Razorpay(options).open();
+            } catch (err) {
+                console.error(err);
+                btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Pay via Razorpay`;
+                btn.disabled = false;
+                alert('Could not initiate payment. Please try again later.');
+            }
+
         });
         
         // Initial setup

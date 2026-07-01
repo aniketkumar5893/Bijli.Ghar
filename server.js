@@ -85,6 +85,33 @@ async function sendMailWithRetry(mailOptions, { retries = 2, delayMs = 3000 } = 
 
 const app = express();
 app.use(cors());
+
+// Razorpay webhook endpoint must receive raw request bytes before JSON parsing.
+app.post('/api/razorpay-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET || '';
+    const signature = req.headers['x-razorpay-signature'];
+    const body = req.body;
+
+    const expected = crypto.createHmac('sha256', webhookSecret).update(body).digest('hex');
+    if (expected !== signature) {
+        console.warn('⚠️ Invalid webhook signature');
+        return res.status(400).send('invalid signature');
+    }
+
+    try {
+        const payload = JSON.parse(body.toString());
+        console.log('Webhook received:', payload.event);
+        if (payload.event === 'payment.captured') {
+            const payment = payload.payload.payment.entity;
+            console.log('Payment captured for order:', payment.order_id);
+        }
+        res.status(200).send('ok');
+    } catch (e) {
+        console.error('Webhook processing error:', e.message);
+        res.status(500).send('error');
+    }
+});
+
 // Keep JSON parser for normal routes
 app.use(express.json());
 // Serve the frontend files from the 'public' folder
@@ -118,6 +145,35 @@ app.post('/api/create-payment-order', async (req, res) => {
 });
 
 // Verify payment from client (handler) and save order to Firestore
+function isValidEmail(email) {
+    return typeof email === 'string' && /\S+@\S+\.\S+/.test(email.trim());
+}
+
+function validateOrderData(orderData, { requirePaymentId = true } = {}) {
+    if (!orderData || typeof orderData !== 'object') return 'Order data is required';
+    if (!orderData.category) return 'Category is required';
+    if (!orderData.name) return 'Name is required';
+    if (!orderData.phone) return 'Phone is required';
+    if (!orderData.email || !isValidEmail(orderData.email)) return 'Valid email is required';
+    if (!Number.isFinite(Number(orderData.amount)) || Number(orderData.amount) < 0) return 'Valid amount is required';
+    if (requirePaymentId && !orderData.paymentId) {
+        return 'Payment ID is required';
+    }
+    return null;
+}
+
+function validateConnectionData(connData) {
+    if (!connData || typeof connData !== 'object') return 'Connection data is required';
+    if (!connData.name) return 'Name is required';
+    if (!connData.phone) return 'Phone is required';
+    if (!connData.email || !isValidEmail(connData.email)) return 'Valid email is required';
+    if (!connData.address) return 'Address is required';
+    if (!connData.items) return 'Load details are required';
+    if (!Number.isFinite(Number(connData.amount)) || Number(connData.amount) < 0) return 'Valid amount is required';
+    if (Number(connData.amount) > 0 && !connData.paymentId) return 'Payment ID is required for paid connections';
+    return null;
+}
+
 app.post('/api/verify-payment', async (req, res) => {
     try {
         const { razorpay_payment_id, razorpay_order_id, razorpay_signature, orderData } = req.body;
@@ -129,6 +185,11 @@ app.post('/api/verify-payment', async (req, res) => {
         if (generated_signature !== razorpay_signature) {
             console.warn('⚠️ Razorpay signature mismatch');
             return res.status(400).json({ error: 'Invalid signature' });
+        }
+
+        const orderValidationError = validateOrderData(orderData, { requirePaymentId: false });
+        if (orderValidationError) {
+            return res.status(400).json({ error: orderValidationError });
         }
 
         // Save order to Firestore
@@ -152,34 +213,6 @@ app.post('/api/verify-payment', async (req, res) => {
     } catch (err) {
         console.error('Error verifying payment:', err.message);
         return res.status(500).json({ error: 'Verification failed' });
-    }
-});
-
-// Razorpay webhook endpoint (use raw body parser)
-app.post('/api/razorpay-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET || '';
-    const signature = req.headers['x-razorpay-signature'];
-    const body = req.body;
-
-    const expected = crypto.createHmac('sha256', webhookSecret).update(body).digest('hex');
-    if (expected !== signature) {
-        console.warn('⚠️ Invalid webhook signature');
-        return res.status(400).send('invalid signature');
-    }
-
-    try {
-        const payload = JSON.parse(body.toString());
-        console.log('Webhook received:', payload.event);
-        // Example: handle payment.captured events
-        if (payload.event === 'payment.captured') {
-            const payment = payload.payload.payment.entity;
-            // Optionally update Firestore if you linked order/payment metadata
-            // This is left as an application-specific step
-        }
-        res.status(200).send('ok');
-    } catch (e) {
-        console.error('Webhook processing error:', e.message);
-        res.status(500).send('error');
     }
 });
 
@@ -339,29 +372,25 @@ function sendConnectionEmailsInBackground(connData, dbId, attachments, totalSize
 app.post('/save-order', async (req, res) => {
     try {
         const orderData = req.body;
+        const orderValidationError = validateOrderData(orderData, { requirePaymentId: false });
+        if (orderValidationError) {
+            return res.status(400).json({ success: false, error: orderValidationError });
+        }
 
         const docRef = await db.collection('orders').add({
             category: orderData.category,
             name: orderData.name,
             phone: orderData.phone,
-            // Keep existing behavior; customer address is stored as provided
             address: orderData.address,
             items: orderData.items,
-            amount: orderData.amount,
-            paymentId: orderData.paymentId,
-            status: 'Received',
+            amount: Number(orderData.amount),
+            paymentId: orderData.paymentId || 'PAY_AFTER_INSPECTION',
+            status: orderData.paymentId ? 'Received' : 'Pending',
             createdAt: new Date()
         });
         console.log(`✅ [DB SUCCESS] Saved ${orderData.category}. DB ID: ${docRef.id}`);
 
-        // Respond to the customer immediately once the order is safely in the
-        // database — this is the operation that actually matters for checkout
-        // to complete. Email notifications are sent in the background below
-        // and must never block or fail this response, since the customer's
-        // order is already secured at this point regardless of email outcome.
         res.status(200).json({ success: true, dbId: docRef.id });
-
-        // Fire-and-forget: admin + customer emails, fully decoupled from the response above.
         sendOrderEmailsInBackground(orderData, docRef.id);
     } catch (error) {
         console.error('❌ [DB ERROR]:', error);
@@ -375,6 +404,10 @@ app.post('/save-order', async (req, res) => {
 app.post('/save-connection', upload.any(), async (req, res) => {
     try {
         const connData = req.body;
+        const connectionValidationError = validateConnectionData(connData);
+        if (connectionValidationError) {
+            return res.status(400).json({ success: false, error: connectionValidationError });
+        }
 
         // 1. Save Text Details to Firebase Database
         const docRef = await db.collection('connections').add({
@@ -384,9 +417,9 @@ app.post('/save-connection', upload.any(), async (req, res) => {
             email: (connData.email || '').toString().trim(),
             address: connData.address,
             items: connData.items,
-            amount: connData.amount,
-            paymentId: connData.paymentId,
-            status: 'Documents Submitted',
+            amount: Number(connData.amount),
+            paymentId: connData.paymentId || 'UNPAID',
+            status: connData.paymentId ? 'Documents Submitted' : 'Pending',
             createdAt: new Date()
         });
         console.log(`✅ [DB SUCCESS] Saved Connection details. DB ID: ${docRef.id}`);

@@ -270,74 +270,93 @@
         }
 
         // Fixed Service Payment Handler
-        document.getElementById('modalForm').addEventListener('submit', function(e) {
+        document.getElementById('modalForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const user = JSON.parse(localStorage.getItem('bijliUser'));
-            if (!user) { alert("Session expired. Please login again."); return; }
+            const user = JSON.parse(localStorage.getItem('bijliUser')) || {};
+            const customerEmail = (user.email || '').toString().trim();
+            if (!customerEmail) {
+                alert('Please add an email to your account before booking a service. This is required for confirmation.');
+                return;
+            }
 
-            const itemDetails = `${currentService} | Material Ready: ${document.getElementById('modalMaterial').checked ? "Yes" : "No"}`;
+            const itemDetails = `${currentService} | Material Ready: ${document.getElementById('modalMaterial').checked ? 'Yes' : 'No'}`;
             const address = document.getElementById('modalLocation').value;
+            const btn = document.querySelector('#modalForm button[type="submit"]');
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Preparing payment...`;
+            btn.disabled = true;
 
-            var options = {
-                "key": "rzp_test_T69VfOhy38d2hR", 
-                "amount": currentPrice * 100, 
-                "currency": "INR", 
-                "name": "Bijli Ghar", 
-                "description": currentService,
-                "handler": function (response) {
-                    
-                    const btn = document.querySelector('#modalForm button[type="submit"]');
-                    btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Saving...`;
-                    btn.disabled = true;
+            try {
+                const createResp = await fetch('/api/create-payment-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: currentPrice })
+                });
+                const order = await createResp.json();
+                if (!order || !order.id) throw new Error(order.error || 'Could not create payment order');
 
-                    fetch('/save-order', { 
-                        method: 'POST', 
-                        headers: { 'Content-Type': 'application/json' }, 
-                        body: JSON.stringify({ 
-                            category: 'Service Booking', 
-                            name: document.getElementById('modalName').value, 
-                            phone: document.getElementById('modalPhone').value, 
-                            email: user.email || '',
-                            amount: currentPrice, 
-                            items: itemDetails, 
-                            address: address, 
-                            paymentId: response.razorpay_payment_id 
-                        }) 
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (!data.success) throw new Error(data.error);
+                const options = {
+                    key: order.key || '',
+                    amount: order.amount,
+                    currency: order.currency || 'INR',
+                    name: 'Bijli Ghar',
+                    description: currentService,
+                    order_id: order.id,
+                    handler: async function (response) {
+                        try {
+                            const verifyResp = await fetch('/api/verify-payment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    orderData: {
+                                        category: 'Service Booking',
+                                        name: document.getElementById('modalName').value,
+                                        phone: document.getElementById('modalPhone').value,
+                                        email: customerEmail,
+                                        amount: currentPrice,
+                                        items: itemDetails,
+                                        address: address
+                                    }
+                                })
+                            });
+                            const verifyJson = await verifyResp.json();
+                            if (!verifyJson.success) throw new Error(verifyJson.error || 'Verification failed');
 
-                        // Secure History Saving Block
-                        const userId = user.uid || user.email || 'guest';
-                        const historyKey = 'bijliHistory_' + userId;
-                        let history = JSON.parse(localStorage.getItem(historyKey)) || [];
-                        
-                        history.push({ 
-                            type: 'Service Booking', 
-                            date: new Date().toLocaleDateString(), 
-                            amount: currentPrice, 
-                            items: itemDetails + ` | Addr: ${address}`,
-                            status: 'Electrician Assigned', 
-                            id: response.razorpay_payment_id,
-                            customerPhone: document.getElementById('modalPhone').value,
-                            customerAddress: address
-                        });
-                        
-                        localStorage.setItem(historyKey, JSON.stringify(history));
-                        
-                        alert("Service Saved! We will call you shortly."); 
-                        window.location.assign('account.html');
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        alert("⚠️ Error: Could not reach the database. Is 'node server.js' running?");
-                        btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Proceed to Pay (₹${currentPrice})`;
-                        btn.disabled = false;
-                    });
-                }
-            };
-            new Razorpay(options).open(); 
+                            const userId = user.uid || user.email || 'guest';
+                            const historyKey = 'bijliHistory_' + userId;
+                            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+                            history.push({
+                                type: 'Service Booking',
+                                date: new Date().toLocaleDateString(),
+                                amount: currentPrice,
+                                items: itemDetails + ` | Addr: ${address}`,
+                                status: 'Electrician Assigned',
+                                id: response.razorpay_payment_id,
+                                customerPhone: document.getElementById('modalPhone').value,
+                                customerAddress: address
+                            });
+                            localStorage.setItem(historyKey, JSON.stringify(history));
+
+                            alert('Payment successful! Service booked and saved.');
+                            window.location.assign('account.html');
+                        } catch (err) {
+                            console.error(err);
+                            btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Proceed to Pay (₹${currentPrice})`;
+                            btn.disabled = false;
+                            alert('⚠️ Payment verification failed. Please contact support.');
+                        }
+                    }
+                };
+
+                new Razorpay(options).open();
+            } catch (err) {
+                console.error(err);
+                btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Proceed to Pay (₹${currentPrice})`;
+                btn.disabled = false;
+                alert('Could not initiate payment. Please try again later.');
+            }
         });
 
         // Custom Electrician Inquiry Handler

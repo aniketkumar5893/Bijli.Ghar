@@ -502,6 +502,25 @@ function updateGlobalUI() {
     updateFloatingAssistantUI(dict);
 }
 
+function updateMobileAuthLinksAfterLanguage() {
+    const loginLink = document.getElementById('mobile-link-login');
+    const logoutBtn = document.getElementById('mobile-link-logout');
+    const authContainer = document.getElementById('auth-btn-container');
+    const user = JSON.parse(localStorage.getItem('bijliUser')) || {};
+
+    if (loginLink && logoutBtn) {
+        if (user && user.uid) {
+            loginLink.classList.add('hidden');
+            logoutBtn.classList.remove('hidden');
+        } else {
+            loginLink.classList.remove('hidden');
+            logoutBtn.classList.add('hidden');
+        }
+    }
+
+    if (authContainer) updateGlobalUI();
+}
+
 // -----------------------------------------------------
 // FLOATING ASSISTANT LOGIC
 // -----------------------------------------------------
@@ -572,6 +591,12 @@ function injectMobileNav() {
                         <a id="mobile-link-connection" href="connection.html" class="block font-semibold text-gray-800 hover:text-primary">New Connection</a>
                         <a id="mobile-link-account" href="account.html" class="block font-semibold text-gray-800 hover:text-primary">Account</a>
                         <a id="mobile-link-about" href="about.html" class="block font-semibold text-gray-800 hover:text-primary">About</a>
+                        <button id="mobile-lang-toggle" type="button" class="w-full text-left flex items-center justify-between font-semibold text-gray-800 hover:text-primary px-2 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
+                            <span><i class="fas fa-globe mr-2 text-secondary"></i><span id="mobile-lang-label">Language</span></span>
+                            <span id="mobile-current-lang" class="text-gray-500">EN</span>
+                        </button>
+                        <a id="mobile-link-login" href="login.html" class="block font-semibold text-gray-800 hover:text-primary">Login</a>
+                        <button id="mobile-link-logout" type="button" class="w-full text-left font-semibold text-gray-800 hover:text-primary px-2 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition hidden">Logout</button>
                     </nav>
                 </div>
             </div>
@@ -631,6 +656,19 @@ function injectMobileNav() {
         try { document.removeEventListener('keydown', trapHandler); } catch (e) {}
     }
 
+    function updateMobileAuthLinks() {
+        const user = JSON.parse(localStorage.getItem('bijliUser')) || {};
+        const loginLink = document.getElementById('mobile-link-login');
+        const logoutBtn = document.getElementById('mobile-link-logout');
+        if (user && user.uid) {
+            if (loginLink) loginLink.classList.add('hidden');
+            if (logoutBtn) logoutBtn.classList.remove('hidden');
+        } else {
+            if (loginLink) loginLink.classList.remove('hidden');
+            if (logoutBtn) logoutBtn.classList.add('hidden');
+        }
+    }
+
     toggleBtn.addEventListener('click', () => {
         const w = drawer.style.width;
         if (!w || w === '0px' || w === '0') openDrawer(); else closeDrawer();
@@ -638,6 +676,29 @@ function injectMobileNav() {
 
     closeBtn.addEventListener('click', closeDrawer);
     backdrop.addEventListener('click', closeDrawer);
+
+    const langButton = document.getElementById('mobile-lang-toggle');
+    const currentLangLabel = document.getElementById('mobile-current-lang');
+    const mobileLangText = document.getElementById('mobile-lang-label');
+    if (langButton) {
+        langButton.addEventListener('click', () => {
+            const nextLang = getCurrentLang() === 'en' ? 'hi' : 'en';
+            localStorage.setItem('bijliLang', nextLang);
+            applyLanguage();
+            if (currentLangLabel) {
+                currentLangLabel.textContent = nextLang.toUpperCase();
+            }
+        });
+    }
+
+    const logoutBtn = document.getElementById('mobile-link-logout');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            globalLogout();
+        });
+    }
+
+    updateMobileAuthLinks();
 
     // Close on ESC
     document.addEventListener('keydown', (e) => {
@@ -709,6 +770,56 @@ function injectSiteBackground() {
     document.head.appendChild(style);
     document.body.insertBefore(pic, document.body.firstChild);
 }
+
+function injectPageLoader() {
+    if (document.getElementById('page-loader-overlay')) return;
+
+    const loaderHTML = `
+        <div id="page-loader-overlay" class="fixed inset-0 z-[150] bg-slate-950/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center">
+            <div class="text-center text-white">
+                <div class="mx-auto w-24 h-24 rounded-full border-4 border-white/20 border-t-white animate-spin"></div>
+                <p class="mt-4 text-lg font-semibold">Loading...</p>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', loaderHTML);
+}
+
+function showPageLoader() {
+    const overlay = document.getElementById('page-loader-overlay');
+    if (!overlay) return;
+    overlay.classList.remove('opacity-0', 'pointer-events-none');
+    overlay.classList.add('opacity-100');
+}
+
+function hidePageLoader() {
+    const overlay = document.getElementById('page-loader-overlay');
+    if (!overlay) return;
+    overlay.classList.remove('opacity-100');
+    overlay.classList.add('opacity-0', 'pointer-events-none');
+}
+
+function setupPageTransitionLoader() {
+    injectPageLoader();
+    window.addEventListener('beforeunload', showPageLoader);
+
+    document.addEventListener('click', (event) => {
+        const anchor = event.target.closest('a[href]');
+        if (!anchor) return;
+        const href = anchor.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+        if (anchor.target === '_blank' || anchor.hasAttribute('download')) return;
+        if (anchor.origin && anchor.origin !== window.location.origin) return;
+        showPageLoader();
+    });
+
+    document.addEventListener('submit', (event) => {
+        if (event.target && event.target.tagName === 'FORM') {
+            showPageLoader();
+        }
+    });
+}
+
 // Function to open/close the assistant menu
 window.toggleAssistant = function() {
     const menu = document.getElementById('assistant-menu');
@@ -770,6 +881,15 @@ function applyLanguage() {
         'nav-meters': dict.navMeters,
         'nav-services': dict.navServices,
         'nav-connection': dict.navConnection,
+        'mobile-link-home': dict.navHome,
+        'mobile-link-meters': dict.navMeters,
+        'mobile-link-services': dict.navServices,
+        'mobile-link-connection': dict.navConnection,
+        'mobile-link-account': dict.navMyAccount,
+        'mobile-link-about': dict.navAbout,
+        'mobile-link-login': dict.navLogin,
+        'mobile-link-logout': dict.navLogout,
+        'mobile-lang-label': dict.langLabel,
         'index-hero-tag': dict.indexHeroTag,
         'index-hero-title-prefix': dict.indexHeroTitleSafety,
         'index-hero-safety': dict.indexHeroSafety,
@@ -971,6 +1091,9 @@ function applyLanguage() {
 
     document.documentElement.lang = lang;
     updateGlobalUI();
+    if (typeof updateMobileAuthLinksAfterLanguage === 'function') {
+        updateMobileAuthLinksAfterLanguage();
+    }
 }
 
 function initLanguageSelector() {
@@ -992,7 +1115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initLanguageSelector();
     // Inject mobile nav for small screens
     try { injectMobileNav(); } catch (e) { /* ignore if fails */ }
-    // Ensure mobile menu labels are updated for selected language
+    // Ensure mobile menu labels are updated for selected language and auth state
     try {
         const dict = getLanguageDict();
         const setIf = (id, val) => { const n = document.getElementById(id); if (n) n.textContent = val; };
@@ -1002,8 +1125,12 @@ document.addEventListener('DOMContentLoaded', () => {
         setIf('mobile-link-connection', dict.navConnection || 'New Connection');
         setIf('mobile-link-account', dict.navMyAccount || 'Account');
         setIf('mobile-link-about', dict.navAbout || 'About');
+        setIf('mobile-lang-label', dict.langLabel || 'Language');
+        setIf('mobile-current-lang', getCurrentLang().toUpperCase());
         setIf('mobile-nav-title', (dict.langOptionEnglish ? 'Menu' : 'Menu'));
     } catch(e) {}
     // Inject site background for all pages
     try { injectSiteBackground(); } catch (e) { /* ignore */ }
+    // Page transition loader
+    try { setupPageTransitionLoader(); } catch (e) { /* ignore */ }
 });

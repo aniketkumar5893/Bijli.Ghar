@@ -204,14 +204,27 @@
 
     <script src="main.js"></script>
     <script>
+        function getCart() {
+            try {
+                const raw = JSON.parse(localStorage.getItem('bijliCart')) || [];
+                if (!Array.isArray(raw)) return [];
+                return raw.map((item) => {
+                    const qty = parseInt(item?.qty ?? item?.quantity ?? 1, 10);
+                    const safeQty = Number.isFinite(qty) && qty > 0 ? qty : 1;
+                    return { ...item, qty: safeQty, quantity: safeQty };
+                });
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem('bijliCart', JSON.stringify(cart));
+        }
+
         // SMART CART RENDERING LOGIC (WITH NAN FIX)
         function renderCartPage() {
-            let cart = [];
-            try {
-                cart = JSON.parse(localStorage.getItem('bijliCart')) || [];
-            } catch(e) {
-                cart = []; // Failsafe if localstorage data is completely corrupted
-            }
+            const cart = getCart();
 
             const grid = document.getElementById('checkout-grid');
             const emptyState = document.getElementById('empty-cart-state');
@@ -219,8 +232,13 @@
             const badge = document.getElementById('nav-cart-badge');
 
             // Update Badge
-            if (cart.length > 0) {
-                badge.innerText = cart.length;
+            const totalQty = cart.reduce((sum, item) => {
+                const qty = parseInt(item?.qty || item?.quantity || 0, 10);
+                return sum + (Number.isFinite(qty) ? qty : 0);
+            }, 0);
+
+            if (totalQty > 0) {
+                badge.innerText = totalQty;
                 badge.classList.remove('hidden');
             } else {
                 badge.classList.add('hidden');
@@ -242,8 +260,10 @@
 
             cart.forEach((item, index) => {
                 // THE FIX: Ensure qty and price are always valid numbers to prevent NaN
-                let qty = item.quantity ? parseInt(item.quantity) : 1; 
-                let price = item.price ? parseInt(item.price.toString().replace(/[^0-9]/g, '')) : 0;
+                let qty = parseInt(item?.qty || item?.quantity || 1, 10);
+                if (!Number.isFinite(qty) || qty < 1) qty = 1;
+                let price = parseInt(item?.price?.toString().replace(/[^0-9]/g, '') || 0, 10);
+                if (!Number.isFinite(price)) price = 0;
                 
                 subtotal += (price * qty);
                 
@@ -309,21 +329,25 @@
 
         // Action Handlers
         function updateQty(index, change) {
-            let cart = JSON.parse(localStorage.getItem('bijliCart')) || [];
-            
-            // Ensure quantity exists before modifying it
-            let currentQty = cart[index].quantity ? parseInt(cart[index].quantity) : 1;
-            cart[index].quantity = currentQty + change;
-            
-            if (cart[index].quantity <= 0) cart.splice(index, 1);
-            localStorage.setItem('bijliCart', JSON.stringify(cart));
+            const cart = getCart();
+            if (!cart[index]) return;
+
+            const currentQty = parseInt(cart[index].qty ?? cart[index].quantity ?? 1, 10);
+            const nextQty = (Number.isFinite(currentQty) ? currentQty : 1) + change;
+            if (nextQty <= 0) {
+                cart.splice(index, 1);
+            } else {
+                cart[index].qty = nextQty;
+                cart[index].quantity = nextQty;
+            }
+            saveCart(cart);
             renderCartPage();
         }
 
         function removeItem(index) {
-            let cart = JSON.parse(localStorage.getItem('bijliCart')) || [];
+            const cart = getCart();
             cart.splice(index, 1);
-            localStorage.setItem('bijliCart', JSON.stringify(cart));
+            saveCart(cart);
             renderCartPage();
         }
 
@@ -335,14 +359,20 @@
         }
 
         // PAYMENT LOGIC
-        document.getElementById('delivery-form').addEventListener('submit', function(e) {
+        document.getElementById('delivery-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const cart = JSON.parse(localStorage.getItem('bijliCart')) || [];
+            const cart = getCart();
             if (cart.length === 0) return;
 
             const user = JSON.parse(localStorage.getItem('bijliUser'));
-            if (!user) { alert("Please login to place an order."); window.location.assign('login.html'); return; }
+            if (!user) {
+                try { if (typeof hidePageLoader === 'function') hidePageLoader(); } catch (e) {}
+                alert("Please login to place an order. You will be redirected to login.");
+                const nextPath = window.location.pathname + (window.location.search || '') + (window.location.hash || '');
+                window.location.assign('login.html?next=' + encodeURIComponent(nextPath));
+                return;
+            }
 
             // Load saved address for validation + email fallback
             const userId = (user && (user.uid || user.email)) ? (user.uid || user.email) : 'guest';
@@ -357,9 +387,10 @@
 
             if (!savedAddressPresent) {
                 if (msg) msg.classList.remove('hidden');
-                alert('Please save an address in My Account before placing your order.');
+                alert('Please save an address in My Account before placing your order. You will be redirected to My Account.');
                 if (btnPay) btnPay.disabled = false;
-                window.location.assign('account.html');
+                const nextPath2 = window.location.pathname + (window.location.search || '') + (window.location.hash || '');
+                window.location.assign('account.html?next=' + encodeURIComponent(nextPath2));
                 return;
             } else {
                 if (msg) msg.classList.add('hidden');

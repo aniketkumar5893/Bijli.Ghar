@@ -797,6 +797,13 @@ function showPageLoader() {
     if (!overlay) return;
     overlay.classList.remove('opacity-0', 'pointer-events-none');
     overlay.classList.add('opacity-100');
+    // Auto-hide fallback in case an external script stalls (10s)
+    try {
+        if (window.__pageLoaderTimeout) clearTimeout(window.__pageLoaderTimeout);
+    } catch (e) {}
+    window.__pageLoaderTimeout = setTimeout(() => {
+        try { hidePageLoader(); } catch (e) {}
+    }, 10000);
 }
 
 function hidePageLoader() {
@@ -804,6 +811,8 @@ function hidePageLoader() {
     if (!overlay) return;
     overlay.classList.remove('opacity-100');
     overlay.classList.add('opacity-0', 'pointer-events-none');
+    try { if (window.__pageLoaderTimeout) clearTimeout(window.__pageLoaderTimeout); } catch (e) {}
+    window.__pageLoaderTimeout = null;
 }
 
 function setupPageTransitionLoader() {
@@ -817,6 +826,25 @@ function setupPageTransitionLoader() {
         if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
         if (anchor.target === '_blank' || anchor.hasAttribute('download')) return;
         if (anchor.origin && anchor.origin !== window.location.origin) return;
+        // Protect certain pages: if the user is not logged in, redirect to login first
+        try {
+            // Only protect pages that should require authentication to access
+            // Viewing product/service pages (meters, services, cart) is allowed.
+            // Booking/checkout flows enforce login within their page scripts.
+            const protectedPaths = ['account.html'];
+            const isProtected = protectedPaths.some(p => href.includes(p));
+            const user = JSON.parse(localStorage.getItem('bijliUser') || 'null');
+            if (isProtected && !user) {
+                event.preventDefault();
+                // Ensure loader isn't shown and redirect to login with return path
+                try { hidePageLoader(); } catch (e) {}
+                const loginUrl = 'login.html?next=' + encodeURIComponent(href || window.location.pathname);
+                window.location.assign(loginUrl);
+                return;
+            }
+        } catch (e) {
+            // ignore JSON parse errors and fall through
+        }
         showPageLoader();
     });
 
@@ -824,6 +852,15 @@ function setupPageTransitionLoader() {
         if (event.target && event.target.tagName === 'FORM') {
             showPageLoader();
         }
+    });
+
+    // Ensure loader is removed on in-page navigation events (back/forward) and pageshow
+    window.addEventListener('pageshow', (e) => {
+        try { hidePageLoader(); } catch (err) { /* ignore */ }
+    });
+
+    window.addEventListener('popstate', () => {
+        try { hidePageLoader(); } catch (err) { /* ignore */ }
     });
 }
 
@@ -1117,6 +1154,82 @@ function initLanguageSelector() {
     applyLanguage();
 }
 
+// Inject a simple mobile navigation overlay so pages don't need duplicated markup
+function injectMobileNav() {
+    if (document.getElementById('mobile-nav')) return;
+    const nav = document.querySelector('nav');
+    if (!nav) return;
+
+    // Add toggle button into the nav container (visible on small screens)
+    try {
+        const container = nav.querySelector('div');
+        if (container && !document.getElementById('mobile-menu-toggle')) {
+            const btn = document.createElement('button');
+            btn.id = 'mobile-menu-toggle';
+            btn.className = 'md:hidden ml-3 p-2 rounded-lg text-white bg-primary/0 hover:bg-primary/10 focus:outline-none';
+            btn.innerHTML = '<i class="fas fa-bars"></i>';
+            container.appendChild(btn);
+        }
+    } catch (e) {}
+
+    // Mobile nav overlay appended to body
+    const mobileHtml = `
+        <div id="mobile-nav" class="fixed inset-0 z-60 bg-white p-4 md:hidden hidden overflow-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h3 id="mobile-nav-title" class="font-bold text-xl">Menu</h3>
+                <button id="mobile-menu-close" class="p-2 text-gray-700"><i class="fas fa-times"></i></button>
+            </div>
+            <nav class="space-y-4">
+                <a id="mobile-link-home" href="index.html" class="block text-lg font-bold">Home</a>
+                <a id="mobile-link-about" href="about.html" class="block text-lg">About</a>
+                <a id="mobile-link-meters" href="meters.html" class="block text-lg">Meters</a>
+                <a id="mobile-link-services" href="services.html" class="block text-lg">Services</a>
+                <a id="mobile-link-connection" href="connection.html" class="block text-lg">New Connection</a>
+                <a id="mobile-link-account" href="account.html" class="block text-lg">My Account</a>
+            </nav>
+
+            <div id="mobile-auth" class="mt-6">
+                <a id="mobile-link-login" href="login.html" class="block bg-blue-600 text-white py-3 px-4 rounded-lg mb-2">Login</a>
+                <button id="mobile-link-logout" onclick="globalLogout()" class="hidden block bg-red-600 text-white py-3 px-4 rounded-lg">Logout</button>
+            </div>
+
+            <div class="mt-4 border-t pt-4">
+                <label class="flex items-center justify-between"><span id="mobile-lang-label">Language</span><span id="mobile-current-lang">EN</span></label>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', mobileHtml);
+
+    // Toggle handlers
+    const openBtn = document.getElementById('mobile-menu-toggle');
+    const closeBtn = document.getElementById('mobile-menu-close');
+    const mobileNav = document.getElementById('mobile-nav');
+
+    function openMobileNav() {
+        if (!mobileNav) return;
+        mobileNav.classList.remove('hidden');
+        document.documentElement.classList.add('overflow-hidden');
+    }
+    function closeMobileNav() {
+        if (!mobileNav) return;
+        mobileNav.classList.add('hidden');
+        document.documentElement.classList.remove('overflow-hidden');
+    }
+
+    if (openBtn) openBtn.addEventListener('click', (e) => { e.preventDefault(); openMobileNav(); });
+    if (closeBtn) closeBtn.addEventListener('click', (e) => { e.preventDefault(); closeMobileNav(); });
+
+    // Close when any mobile link is clicked
+    const links = mobileNav.querySelectorAll('a[href]');
+    links.forEach(a => {
+        a.addEventListener('click', () => { closeMobileNav(); });
+    });
+
+    // Update auth visibility initially
+    updateMobileAuthLinksAfterLanguage();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     updateGlobalUI();
     initLanguageSelector();
@@ -1140,4 +1253,6 @@ document.addEventListener('DOMContentLoaded', () => {
     try { injectSiteBackground(); } catch (e) { /* ignore */ }
     // Page transition loader
     try { setupPageTransitionLoader(); } catch (e) { /* ignore */ }
+    // Ensure any loader shown by previous page is hidden once this page initializes
+    try { hidePageLoader(); } catch (e) { /* ignore */ }
 });

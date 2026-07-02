@@ -120,7 +120,7 @@
                             <button type="button" onclick="increaseQty('qty-1')" class="w-8 h-8 bg-green-500 hover:bg-green-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">+</button>
                         </div>
                     </div>
-                    <button id="btn-1" onclick="addToCart('Indotech 1-Phase Meter (No Box)', 1000, 'qty-1', 'btn-1', 1)" class="w-full bg-primary text-white font-black py-4 rounded-xl hover:bg-blue-800 transition duration-300 shadow-md flex justify-center items-center">
+                    <button id="btn-1" data-cart-name="Indotech 1-Phase Meter (No Box)" data-cart-price="1000" data-cart-qty-input="qty-1" data-cart-item-index="1" class="w-full bg-primary text-white font-black py-4 rounded-xl hover:bg-blue-800 transition duration-300 shadow-md flex justify-center items-center">
                         <i class="fas fa-shopping-cart mr-2"></i> <span id="meters-card-1-add">Add to Cart</span>
                     </button>
                 </div>
@@ -175,7 +175,7 @@
                             <button type="button" onclick="increaseQty('qty-2')" class="w-8 h-8 bg-green-500 hover:bg-green-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">+</button>
                         </div>
                     </div>
-                    <button id="btn-2" onclick="addToCart('Indotech Box Meter', 1300, 'qty-2', 'btn-2', 2)" class="w-full bg-primary text-white font-black py-4 rounded-xl hover:bg-blue-800 transition duration-300 shadow-md flex justify-center items-center">
+                    <button id="btn-2" data-cart-name="Indotech Box Meter" data-cart-price="1300" data-cart-qty-input="qty-2" data-cart-item-index="2" class="w-full bg-primary text-white font-black py-4 rounded-xl hover:bg-blue-800 transition duration-300 shadow-md flex justify-center items-center">
                         <i class="fas fa-shopping-cart mr-2"></i> <span id="meters-card-2-add">Add to Cart</span>
                     </button>
                 </div>
@@ -229,7 +229,7 @@
                             <button type="button" onclick="increaseQty('qty-3')" class="w-8 h-8 bg-green-500 hover:bg-green-600 text-white font-bold rounded flex items-center justify-center transition cursor-pointer">+</button>
                         </div>
                     </div>
-                    <button id="btn-3" onclick="addToCart('L&T Three Phase Meter', 3800, 'qty-3', 'btn-3', 3)" class="w-full bg-primary text-white font-black py-4 rounded-xl hover:bg-blue-800 transition duration-300 shadow-md flex justify-center items-center">
+                    <button id="btn-3" data-cart-name="L&T Three Phase Meter" data-cart-price="3800" data-cart-qty-input="qty-3" data-cart-item-index="3" class="w-full bg-primary text-white font-black py-4 rounded-xl hover:bg-blue-800 transition duration-300 shadow-md flex justify-center items-center">
                         <i class="fas fa-shopping-cart mr-2"></i> <span id="meters-card-3-add">Add to Cart</span>
                     </button>
                 </div>
@@ -313,50 +313,51 @@
         // SMART ADD TO CART LOGIC WITH VISUAL FEEDBACK
         function addToCart(name, price, qtyInputId, btnId, itemIndex) {
             const qtyInput = document.getElementById(qtyInputId);
-            const qty = parseInt(qtyInput?.value);
-            
-            if (isNaN(qty) || qty < 1) {
+            const qty = parseInt(qtyInput?.value, 10);
+
+            if (!Number.isFinite(qty) || qty < 1) {
                 alert("Please enter a valid quantity of 1 or more.");
                 return;
             }
 
-
-            // Retrieve current cart from storage
-            let cart = JSON.parse(localStorage.getItem('bijliCart')) || [];
-            
-            // Check if item already exists in cart and update quantity
-            const existingItem = cart.find(item => item.name === name);
-            if (existingItem) {
-                existingItem.quantity += qty;
-            } else {
-                cart.push({ name: name, price: price, quantity: qty });
+            let cart = [];
+            try {
+                cart = JSON.parse(localStorage.getItem('bijliCart')) || [];
+            } catch (error) {
+                console.warn('Cart storage was invalid, resetting it.', error);
+                cart = [];
             }
 
-            // Save updated cart to storage
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity = (Number(existingItem.quantity) || 0) + qty;
+            } else {
+                cart.push({ name, price: Number(price), quantity: qty });
+            }
+
             localStorage.setItem('bijliCart', JSON.stringify(cart));
 
-            // Visual Button Feedback: Change color and show quantity added
             const btn = document.getElementById(btnId);
-            const originalHtml = `<i class="fas fa-shopping-cart mr-2"></i> Add to Cart`;
-            
-            btn.innerHTML = `<i class="fas fa-check-circle mr-2"></i> Added ${qty} Item(s)!`;
-            btn.classList.remove('bg-primary', 'hover:bg-blue-800');
-            btn.classList.add('bg-green-600', 'hover:bg-green-700');
-            
-            // Reset the input box back to 1 for the next click
-            qtyInput.value = 1;
+            if (btn) {
+                const originalHtml = `<i class="fas fa-shopping-cart mr-2"></i> Add to Cart`;
+                btn.innerHTML = `<i class="fas fa-check-circle mr-2"></i> Added ${qty} Item(s)!`;
+                btn.classList.remove('bg-primary', 'hover:bg-blue-800');
+                btn.classList.add('bg-green-600', 'hover:bg-green-700');
 
-            // Reset button styling after 2 seconds
-            setTimeout(() => {
-                btn.innerHTML = originalHtml;
-                btn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                btn.classList.add('bg-primary', 'hover:bg-blue-800');
-            }, 2000);
+                if (qtyInput) qtyInput.value = 1;
 
-            // Update badge and persistent indicators
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    btn.classList.add('bg-primary', 'hover:bg-blue-800');
+                }, 2000);
+            }
+
             updateNavBadge();
             updateCartIndicators();
         }
+
+        window.addToCart = addToCart;
 
         // INCREMENT/DECREMENT QUANTITY FUNCTIONS
         function increaseQty(inputId) {
@@ -388,8 +389,15 @@
 
         // NAVIGATION BADGE UPDATER
 function updateNavBadge() {
-            const cart = JSON.parse(localStorage.getItem('bijliCart')) || [];
+            let cart = [];
+            try {
+                cart = JSON.parse(localStorage.getItem('bijliCart')) || [];
+            } catch (error) {
+                cart = [];
+            }
+
             const badge = document.getElementById('nav-cart-badge');
+            if (!badge) return;
 
             const totalQty = cart.reduce((sum, item) => {
                 const qty = parseInt(item?.qty || item?.quantity || 0, 10);
@@ -406,6 +414,16 @@ function updateNavBadge() {
 
         // Initialize UI on page load
         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-cart-name]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const name = button.getAttribute('data-cart-name');
+                    const price = Number(button.getAttribute('data-cart-price') || 0);
+                    const qtyInputId = button.getAttribute('data-cart-qty-input');
+                    const btnId = button.id;
+                    addToCart(name, price, qtyInputId, btnId, Number(button.getAttribute('data-cart-item-index') || 0));
+                });
+            });
+
             updateNavBadge();
             updateCartIndicators();
         });

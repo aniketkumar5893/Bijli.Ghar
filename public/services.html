@@ -147,7 +147,7 @@
 
     <!-- BOOKING MODAL -->
     <div id="bookingModal" class="hidden fixed inset-0 bg-primary/90 z-[100] flex items-center justify-center p-4 backdrop-blur-md transition-opacity">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md relative overflow-hidden border border-white/20">
+        <div class="bg-white shadow-2xl w-full max-w-full md:max-w-md h-full md:h-auto relative overflow-auto md:overflow-hidden border border-white/20 rounded-none md:rounded-3xl">
             <div class="bg-primary p-6 text-white flex justify-between items-center">
 <h2 class="text-2xl font-extrabold flex items-center"><i class="fas fa-bolt text-secondary mr-2"></i> <span id="modalTitle">Book Service</span></h2>
                 <button onclick="closeBookingModal()" class="text-blue-200 hover:text-white transition transform hover:scale-110 bg-blue-800/50 rounded-full w-8 h-8 flex items-center justify-center">
@@ -253,7 +253,13 @@
         // Modal Logic
         function openBookingModal(serviceName, price) {
             const user = JSON.parse(localStorage.getItem('bijliUser'));
-            if (!user) { alert("Please login to book a service."); window.location.assign('login.html'); return; }
+            if (!user) {
+                try { if (typeof hidePageLoader === 'function') hidePageLoader(); } catch (e) {}
+                alert("Please login to book a service. You will be redirected to login.");
+                const nextPath = window.location.pathname + (window.location.search || '') + (window.location.hash || '');
+                window.location.assign('login.html?next=' + encodeURIComponent(nextPath));
+                return;
+            }
             
             currentService = serviceName; 
             currentPrice = price;
@@ -275,18 +281,33 @@
         // Fixed Service Payment Handler
         document.getElementById('modalForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const user = JSON.parse(localStorage.getItem('bijliUser')) || {};
+            const btn = document.querySelector('#modalForm button[type="submit"]');
+            const originalBtnText = btn ? btn.innerHTML : '';
+
+            const user = JSON.parse(localStorage.getItem('bijliUser')) || null;
+            if (!user) {
+                // Ensure loader isn't left visible
+                try { if (typeof hidePageLoader === 'function') hidePageLoader(); } catch (err) {}
+                alert('Please login to book a service. You will be redirected to the login page.');
+                window.location.assign('login.html');
+                return;
+            }
+
             const customerEmail = (user.email || '').toString().trim();
             if (!customerEmail) {
-                alert('Please add an email to your account before booking a service. This is required for confirmation.');
+                try { if (typeof hidePageLoader === 'function') hidePageLoader(); } catch (err) {}
+                alert('Please add an email to your account before booking a service. You will be redirected to My Account.');
+                const nextPath2 = window.location.pathname + (window.location.search || '') + (window.location.hash || '');
+                window.location.assign('account.html?next=' + encodeURIComponent(nextPath2));
                 return;
             }
 
             const itemDetails = `${currentService} | Material Ready: ${document.getElementById('modalMaterial').checked ? 'Yes' : 'No'}`;
             const address = document.getElementById('modalLocation').value;
-            const btn = document.querySelector('#modalForm button[type="submit"]');
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Preparing payment...`;
-            btn.disabled = true;
+            if (btn) {
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Preparing payment...`;
+                btn.disabled = true;
+            }
             if (typeof showPageLoader === 'function') showPageLoader();
 
             try {
@@ -359,9 +380,11 @@
                 if (typeof hidePageLoader === 'function') hidePageLoader();
             } catch (err) {
                 console.error(err);
-                if (typeof hidePageLoader === 'function') hidePageLoader();
-                btn.innerHTML = `<i class="fas fa-lock mr-2"></i> Proceed to Pay (₹${currentPrice})`;
-                btn.disabled = false;
+                try { if (typeof hidePageLoader === 'function') hidePageLoader(); } catch (e) {}
+                if (btn) {
+                    btn.innerHTML = originalBtnText || `<i class="fas fa-lock mr-2"></i> Proceed to Pay (₹${currentPrice})`;
+                    btn.disabled = false;
+                }
                 alert('Could not initiate payment. Please try again later.');
             }
         });
@@ -370,7 +393,13 @@
         document.getElementById('customServiceForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const user = JSON.parse(localStorage.getItem('bijliUser'));
-            if (!user) { alert("Please login to submit a request."); window.location.assign('login.html'); return; }
+            if (!user) {
+                try { if (typeof hidePageLoader === 'function') hidePageLoader(); } catch (e) {}
+                alert("Please login to submit a request. You will be redirected to login.");
+                const nextPath3 = window.location.pathname + (window.location.search || '') + (window.location.hash || '');
+                window.location.assign('login.html?next=' + encodeURIComponent(nextPath3));
+                return;
+            }
 
             const btn = document.querySelector('#customServiceForm button[type="submit"]');
             const originalText = btn.innerHTML;

@@ -56,6 +56,11 @@
                 <p id="login-access" class="text-gray-500 text-sm">Access your Bijli Ghar account.</p>
             </div>
 
+            <!-- Next-target banner: shown when ?next= is present -->
+            <div id="login-next-banner" class="hidden mb-4 p-3 rounded text-sm bg-yellow-50 border border-yellow-200 text-yellow-800 font-bold text-center">
+                You must sign in to continue to <a id="login-next-link" class="underline text-yellow-900"></a>
+            </div>
+
             <!-- TABS -->
             <div class="flex border-b border-gray-200 mb-6">
                 <button id="tab-login" onclick="switchTab('login')" class="w-1/2 py-3 font-bold text-primary border-b-2 border-primary transition">Sign In</button>
@@ -188,6 +193,52 @@
             }
         }
 
+        // Show friendly next-target banner if `?next=` provided
+        (function showNextBanner() {
+            try {
+                const params = new URLSearchParams(window.location.search || '');
+                const nextRaw = params.get('next');
+                if (!nextRaw) return;
+                // Avoid external redirects by rejecting full URL schemes
+                if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(nextRaw)) return;
+                const decoded = decodeURIComponent(nextRaw);
+
+                // Map common paths to friendly names
+                const friendlyMap = {
+                    '/': 'Home',
+                    'index.html': 'Home',
+                    '/index.html': 'Home',
+                    'services.html': 'Book Electrician',
+                    '/services.html': 'Book Electrician',
+                    'connection.html': 'New Connection',
+                    '/connection.html': 'New Connection',
+                    'meters.html': 'Buy Meters',
+                    '/meters.html': 'Buy Meters',
+                    'cart.html': 'Cart',
+                    '/cart.html': 'Cart',
+                    'account.html': 'My Account',
+                    '/account.html': 'My Account'
+                };
+
+                // Extract path portion for mapping (strip query/hash)
+                let pathOnly = decoded;
+                const qIdx = decoded.indexOf('?');
+                const hIdx = decoded.indexOf('#');
+                const cut = qIdx > -1 ? qIdx : (hIdx > -1 ? hIdx : decoded.length);
+                pathOnly = decoded.substring(0, cut) || decoded;
+
+                const friendly = friendlyMap[pathOnly] || pathOnly.replace(/^\//, '') || decoded;
+
+                const link = document.getElementById('login-next-link');
+                if (!link) return;
+                link.textContent = friendly;
+                link.href = decoded;
+
+                const banner = document.getElementById('login-next-banner');
+                if (banner) banner.classList.remove('hidden');
+            } catch (e) { /* ignore */ }
+        })();
+
         // Error helper (Updated to support HTML links)
         function showError(msg) {
             const errBox = document.getElementById('error-box');
@@ -204,6 +255,15 @@
                 phone: user.phoneNumber || "" 
             };
             localStorage.setItem('bijliUser', JSON.stringify(userData));
+            // Smart redirect: return to `next` param when present and safe
+            try {
+                const params = new URLSearchParams(window.location.search || '');
+                const next = params.get('next');
+                if (next && !/^https?:\/\//i.test(next)) {
+                    window.location.assign(next);
+                    return;
+                }
+            } catch (e) {}
             window.location.assign('account.html'); 
         }
 
